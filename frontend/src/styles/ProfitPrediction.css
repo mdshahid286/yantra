@@ -1,0 +1,65 @@
+.profit-page {
+    padding-top: var(--spacing-lg);
+}
+
+.profit-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-lg);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.profit-form,
+.profit-result {
+    width: 100%;
+}
+
+.result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+    font-size: 1.1rem;
+}
+
+.val {
+    font-weight: 700;
+}
+
+.val.income {
+    color: #2E7D32;
+}
+
+.val.expense {
+    color: #d32f2f;
+}
+
+.divider {
+    border-bottom: 2px dashed var(--color-border);
+    margin: var(--spacing-md) 0;
+}
+
+.net-profit {
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.positive {
+    color: #2E7D32;
+}
+
+.negative {
+    color: #d32f2f;
+}
+
+.margin-badge {
+    text-align: center;
+    background: var(--color-primary-light);
+    color: white;
+    padding: 5px;
+    border-radius: var(--radius-full);
+    margin-top: var(--spacing-md);
+    font-weight: 600;
+}

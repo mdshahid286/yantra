@@ -1,0 +1,117 @@
+.voice-assistant-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: var(--spacing-lg);
+}
+
+.voice-header {
+    margin-bottom: var(--spacing-xl);
+}
+
+.assistant-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+}
+
+.mic-button-wrapper {
+    position: relative;
+    margin-bottom: var(--spacing-md);
+}
+
+.mic-button {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    color: white;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(46, 125, 50, 0.4);
+    z-index: 2;
+    position: relative;
+    transition: transform 0.2s;
+}
+
+.mic-button:active {
+    transform: scale(0.95);
+}
+
+.listening .mic-button {
+    background-color: #f44336;
+    /* Red when listening */
+}
+
+/* Ripple Animation */
+.ripple {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    background-color: rgba(76, 175, 80, 0.4);
+    border-radius: 50%;
+    animation: ripple-effect 1.5s infinite;
+    z-index: 1;
+}
+
+@keyframes ripple-effect {
+    0% {
+        width: 80px;
+        height: 80px;
+        opacity: 0.8;
+    }
+
+    100% {
+        width: 200px;
+        height: 200px;
+        opacity: 0;
+    }
+}
+
+.status-text {
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-xl);
+}
+
+.response-card {
+    background: white;
+    border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 0;
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
+    width: 100%;
+    border: 1px solid var(--color-border);
+}
+
+.response-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--spacing-xs);
+}
+
+.response-header span {
+    font-weight: 700;
+    color: var(--color-primary);
+    font-size: 0.9rem;
+}
+
+.btn-icon {
+    background: none;
+    color: var(--color-accent-dark);
+    font-size: 1rem;
+}
+
+.response-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+}

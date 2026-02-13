@@ -1,0 +1,102 @@
+.dashboard-header {
+    margin-bottom: var(--spacing-lg);
+}
+
+.date-display {
+    color: var(--color-text-secondary);
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.weather-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: var(--spacing-sm);
+}
+
+.weather-temp .temp {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-primary-dark);
+    display: block;
+}
+
+.weather-temp .condition {
+    color: var(--color-text-secondary);
+}
+
+.advisory-text {
+    font-style: italic;
+    color: var(--color-text-main);
+    margin-bottom: var(--spacing-md);
+    border-left: 4px solid var(--color-accent);
+    padding-left: var(--spacing-sm);
+}
+
+.market-list {
+    padding: 0;
+}
+
+.market-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.market-item:last-child {
+    border-bottom: none;
+}
+
+.price-up {
+    color: green;
+    font-weight: 600;
+}
+
+.price-down {
+    color: red;
+    font-weight: 600;
+}
+
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+.quick-action-card {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-top: 4px solid transparent;
+    height: 120px;
+}
+
+.quick-action-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+}
+
+.icon-wrapper {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.quick-action-card span {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-main);
+}

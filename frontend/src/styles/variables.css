@@ -1,0 +1,47 @@
+:root {
+  /* Agricultural Color Palette */
+  --color-primary: #2E7D32; /* Deep Green - Growth */
+  --color-primary-light: #4CAF50; /* Lighter Green */
+  --color-primary-dark: #1B5E20; /* Darker Green - Stability */
+  --color-accent: #F9A825; /* Golden Yellow - Harvest */
+  --color-accent-light: #FBC02D;
+  --color-accent-dark: #F57F17;
+  
+  /* Earth Tones */
+  --color-earth: #795548; /* Brown - Soil */
+  --color-earth-light: #A1887F;
+  --color-sand: #F5F5DC; /* Beige - Backgrounds */
+
+  /* Neutrals */
+  --color-bg-body: #F4F7F4; /* Very light green tinted white */
+  --color-bg-card: #FFFFFF;
+  --color-text-main: #212121;
+  --color-text-secondary: #757575;
+  --color-border: #E0E0E0;
+
+  /* Typography */
+  --font-family-main: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-family-display: 'Merriweather', serif; /* For headings to give a trusted feel */
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  /* Shadows - Elevation */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+}

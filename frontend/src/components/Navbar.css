@@ -1,0 +1,42 @@
+.navbar {
+    background-color: white;
+    box-shadow: var(--shadow-sm);
+    padding: var(--spacing-sm) 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--color-primary);
+    font-weight: 700;
+    font-size: 1.5rem;
+    font-family: var(--font-family-display);
+}
+
+.nav-links {
+    display: flex;
+    gap: var(--spacing-lg);
+}
+
+.nav-links a {
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    color: var(--color-primary);
+}
+
+.user-profile {
+    color: var(--color-text-secondary);
+    cursor: pointer;
+}

@@ -1,0 +1,92 @@
+.fertilizer-page {
+    padding-top: var(--spacing-lg);
+}
+
+.calc-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-lg);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.calc-form {
+    width: 100%;
+}
+
+.input-with-unit {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.input-with-unit input {
+    flex: 2;
+}
+
+.input-with-unit select {
+    flex: 1;
+}
+
+select {
+    padding: 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: white;
+}
+
+.result-card {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    background-color: #f0f4c3;
+    /* Light lime background */
+}
+
+.fertilizer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-md);
+    margin: var(--spacing-md) 0;
+    text-align: center;
+}
+
+.fert-item {
+    background: white;
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-sm);
+}
+
+.fert-name {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}
+
+.fert-qty {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-primary-dark);
+}
+
+.cost-estimate {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--spacing-md);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    font-size: 1.1rem;
+}
+
+.cost-value {
+    font-weight: 700;
+    color: var(--color-accent-dark);
+}
+
+.note {
+    font-size: 0.8rem;
+    text-align: center;
+    margin-top: var(--spacing-sm);
+    opacity: 0.7;
+}

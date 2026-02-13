@@ -1,0 +1,61 @@
+.market-page {
+    padding-top: var(--spacing-lg);
+}
+
+.market-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--spacing-lg);
+}
+
+@media (max-width: 768px) {
+    .market-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.chart-container {
+    min-height: 300px;
+}
+
+.decision-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.recommendation {
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+    border-left: 4px solid #ccc;
+}
+
+.recommendation.sell {
+    background-color: #ffebee;
+    border-color: #f44336;
+}
+
+.recommendation.hold {
+    background-color: #e8f5e9;
+    border-color: #4caf50;
+}
+
+.market-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--spacing-sm);
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-item span {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+}
+
+.stat-item strong {
+    font-size: 1.2rem;
+}

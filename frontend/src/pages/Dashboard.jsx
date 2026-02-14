@@ -48,21 +48,21 @@ const MetricWidget = ({ label, value, trend, isUp }) => (
 const Dashboard = () => {
     const navigate = useNavigate();
     const [weather, setWeather] = React.useState(null);
-    const [loading, setLoading] = React.useState(true);
+    const [marketTrends, setMarketTrends] = React.useState([]);
 
     React.useEffect(() => {
-        // const fetchWeather = async () => {
-        //     try {
-        //         const response = await API.get('/weather?location=Pune');
-        //         setWeather(response.data);
-        //     } catch (error) {
-        //         console.error("Weather error:", error);
-        //     } finally {
-        //         setLoading(false);
-        //     }
-        // };
-        // fetchWeather();
-        setLoading(false); // Just stop loading if we're not fetching
+        const fetchMarketTrends = async () => {
+            try {
+                const response = await API.get('/market/trends');
+                if (response.data.success) {
+                    setMarketTrends(response.data.data);
+                }
+            } catch (error) {
+                console.error("Market trends error:", error);
+            }
+        };
+        fetchMarketTrends();
+        setLoading(false);
     }, []);
 
     return (
@@ -99,17 +99,17 @@ const Dashboard = () => {
                                 <FaCloudSun className="w-icon" />
                                 <div className="w-text">
                                     <h3>{weather?.weather[0]?.main || "Partly Cloudy"}</h3>
-                                    <span>Temp: {Math.round(weather?.main?.temp)}°C | Humidity: {weather?.main?.humidity}%</span>
+                                    <span>Temp: {Math.round(weather?.main?.temp) || "28"}°C | Humidity: {weather?.main?.humidity || "45"}%</span>
                                 </div>
                             </div>
                             <div className="weather-details-row">
                                 <div className="w-stat">
                                     <span className="label">Wind</span>
-                                    <span className="value">{weather?.wind?.speed} km/h</span>
+                                    <span className="value">{weather?.wind?.speed || "12"} km/h</span>
                                 </div>
                                 <div className="w-stat">
                                     <span className="label">Pressure</span>
-                                    <span className="value">{weather?.main?.pressure} hPa</span>
+                                    <span className="value">{weather?.main?.pressure || "1012"} hPa</span>
                                 </div>
                             </div>
                         </>
@@ -122,18 +122,22 @@ const Dashboard = () => {
                         <button className="btn-text" onClick={() => navigate('/market')}>Analyze</button>
                     </div>
                     <div className="market-list-compact">
-                        <div className="m-item">
-                            <span className="m-name">Wheat (Grade A)</span>
-                            <span className="m-price">₹2,450 <span className="m-diff">+₹45</span></span>
-                        </div>
-                        <div className="m-item">
-                            <span className="m-name">Soybean</span>
-                            <span className="m-price">₹5,120 <span className="m-diff down">-₹12</span></span>
-                        </div>
-                        <div className="m-item">
-                            <span className="m-name">Onion</span>
-                            <span className="m-price">₹1,800 <span className="m-diff">0</span></span>
-                        </div>
+                        {marketTrends.length > 0 ? (
+                            marketTrends.map((m, i) => (
+                                <div key={i} className="m-item">
+                                    <span className="m-name">{m.commodity}</span>
+                                    <span className="m-price">
+                                        ₹{m.currentPrice.toLocaleString()}
+                                        <span className={`m-diff ${m.trend === 'down' ? 'down' : ''}`}>
+                                            {m.trend === 'up' ? '+' : m.trend === 'down' ? '-' : ''}
+                                            ₹{Math.abs(m.forecast - m.currentPrice)}
+                                        </span>
+                                    </span>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="m-item">Loading market data...</div>
+                        )}
                     </div>
                 </div>
             </section>

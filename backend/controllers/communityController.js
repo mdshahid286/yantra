@@ -40,6 +40,24 @@ exports.sendMessage = async (req, res) => {
     try {
         const { groupId, text, senderId, senderName, type } = req.body;
 
+        console.log('Received message request:', { groupId, text, senderId, senderName, type });
+
+        // Validate required fields
+        if (!groupId || !text || !senderId || !senderName) {
+            console.error('Missing required fields');
+            return res.status(400).json({
+                message: 'Missing required fields',
+                required: ['groupId', 'text', 'senderId', 'senderName']
+            });
+        }
+
+        // Validate groupId format
+        const mongoose = require('mongoose');
+        if (!mongoose.Types.ObjectId.isValid(groupId)) {
+            console.error('Invalid groupId format:', groupId);
+            return res.status(400).json({ message: 'Invalid groupId format' });
+        }
+
         const newMessage = await CommunityMessage.create({
             groupId,
             senderId,
@@ -47,6 +65,14 @@ exports.sendMessage = async (req, res) => {
             text,
             type: type || 'text'
         });
+
+        console.log('Message created successfully:', newMessage._id);
+
+        // Emit live message via Socket.io
+        const io = req.app.get('socketio');
+        if (io) {
+            io.to(groupId.toString()).emit('receive_message', newMessage);
+        }
 
         // Update group's last message
         await CommunityGroup.findByIdAndUpdate(groupId, {
@@ -56,6 +82,9 @@ exports.sendMessage = async (req, res) => {
 
         res.status(201).json(newMessage);
     } catch (error) {
+        console.error('Error sending message:', error);
+        console.error('Error details:', error.message);
+        console.error('Error stack:', error.stack);
         res.status(500).json({ message: 'Error sending message', error: error.message });
     }
 };

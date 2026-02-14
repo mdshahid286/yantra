@@ -5,8 +5,12 @@ import {
     FaWheatAwn, FaDroplet, FaFilter,
     FaRegCommentDots
 } from 'react-icons/fa6';
+import axios from 'axios';
 import API from '../services/api';
+import { io } from 'socket.io-client';
 import '../styles/Community.css';
+
+const socket = io('http://localhost:5000'); // Ensure this matches your backend port
 
 const Community = () => {
     const [groups, setGroups] = useState([]);
@@ -19,13 +23,38 @@ const Community = () => {
     const user = JSON.parse(localStorage.getItem('user')) || { _id: 'temp', name: 'Farmer' };
     const chatEndRef = useRef(null);
 
+    // Initial group fetch
     useEffect(() => {
         fetchGroups();
     }, [filters]);
 
+    // Socket.io Listener
+    useEffect(() => {
+        socket.on('receive_message', (data) => {
+            if (selectedGroup && data.groupId === selectedGroup._id) {
+                setMessages((prev) => [...prev, data]);
+            }
+
+            // Update last message in sidebar for the specific group
+            setGroups((prevGroups) => prevGroups.map(g =>
+                g._id === data.groupId
+                    ? { ...g, lastMessage: data.text, lastMessageTime: new Date() }
+                    : g
+            ));
+        });
+
+        return () => socket.off('receive_message');
+    }, [selectedGroup]);
+
+    // Handle Group Joining
     useEffect(() => {
         if (selectedGroup) {
+            socket.emit('join_group', selectedGroup._id);
             fetchMessages(selectedGroup._id);
+
+            return () => {
+                socket.emit('leave_group', selectedGroup._id);
+            };
         }
     }, [selectedGroup]);
 
@@ -64,23 +93,36 @@ const Community = () => {
         try {
             const payload = {
                 groupId: selectedGroup._id,
-                senderId: user._id,
-                senderName: user.name,
-                text: newMessage,
+                senderId: user._id || 'temp',
+                senderName: user.name || 'Anonymous Farmer',
+                text: newMessage.trim(),
                 type: 'text'
             };
-            const response = await API.post('/community/message', payload);
-            setMessages([...messages, response.data]);
-            setNewMessage('');
 
-            // Update local groups list last message
-            setGroups(groups.map(g =>
-                g._id === selectedGroup._id
-                    ? { ...g, lastMessage: newMessage, lastMessageTime: new Date() }
-                    : g
-            ));
+            console.log('Sending message with payload:', payload);
+            console.log('Selected Group:', selectedGroup);
+            console.log('User:', user);
+
+            // Validate all required fields are present
+            if (!payload.groupId || !payload.senderId || !payload.senderName || !payload.text) {
+                console.error('Missing fields:', {
+                    groupId: !!payload.groupId,
+                    senderId: !!payload.senderId,
+                    senderName: !!payload.senderName,
+                    text: !!payload.text
+                });
+                alert('Cannot send message: missing required information');
+                return;
+            }
+
+            const response = await axios.post('http://localhost:5000/api/community/message', payload);
+            console.log('Message sent successfully:', response.data);
+            setNewMessage('');
         } catch (error) {
             console.error('Error sending message:', error);
+            console.error('Error response:', error.response?.data);
+            console.error('Error status:', error.response?.status);
+            alert('Failed to send message. Please try again.');
         }
     };
 

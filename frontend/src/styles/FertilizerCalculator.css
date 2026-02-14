@@ -88,6 +88,111 @@
     border-color: var(--color-primary);
 }
 
+/* Nutrient Levels Styling */
+.nutrient-inputs {
+    display: flex;
+    gap: 12px;
+}
+
+.nut-field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.nut-field span {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--color-primary);
+}
+
+.nut-field input {
+    width: 100%;
+    text-align: center;
+    padding: 10px !important;
+}
+
+/* Nutrient Gap Analysis */
+.nutrient-gap-analysis {
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
+
+.nutrient-gap-analysis h4 {
+    font-size: 0.9rem;
+    color: var(--color-primary);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.gap-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.gap-item {
+    width: 100%;
+}
+
+.gap-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+}
+
+.gap-meta {
+    opacity: 0.7;
+}
+
+.gap-bar-container {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.gap-bar {
+    height: 100%;
+    border-radius: 4px;
+}
+
+.gap-marker {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 2px;
+    background: #ff5252;
+    z-index: 2;
+}
+
+/* Dosage Splits */
+.dosage-section h4 {
+    font-size: 0.9rem;
+    margin: 20px 0 15px;
+    opacity: 0.9;
+}
+
+.split-info {
+    font-size: 0.7rem;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    opacity: 0.8;
+}
+
+.split-info span {
+    font-weight: 500;
+}
+
 /* Result Card */
 .calc-result-card {
     padding: var(--spacing-xl);
@@ -239,4 +344,97 @@
     .fert-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* AI Soil Analysis Styles */
+.upload-box-pro {
+    position: relative;
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 10px;
+}
+
+.upload-box-pro:hover {
+    border-color: var(--color-primary);
+    background: rgba(27, 94, 32, 0.05);
+}
+
+.upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    color: #666;
+}
+
+.upload-label svg {
+    font-size: 2rem;
+    color: var(--color-primary);
+}
+
+.file-name {
+    display: block;
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.analyzing-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.spinner-mini {
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 0, 0, 0.1);
+    border-top: 3px solid var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.ai-badge {
+    background: var(--color-primary);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.ai-recommendation-box {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f1f8e9;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-primary-light);
+}
+
+.ai-recommendation-box h4 {
+    color: var(--color-primary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }

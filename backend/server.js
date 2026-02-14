@@ -12,11 +12,45 @@ const connectDB = require('./config/db');
 connectDB();
 
 const app = express();
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require('socket.io');
 
-// Middleware
 const allowedOrigins = [
     'http://localhost:5173',
 ];
+
+const io = new Server(server, {
+    cors: {
+        origin: allowedOrigins,
+        methods: ["GET", "POST"]
+    }
+});
+
+// Socket.io Connection Logic
+io.on('connection', (socket) => {
+    console.log('User connected:', socket.id);
+
+    socket.on('join_group', (groupId) => {
+        socket.join(groupId);
+        console.log(`User ${socket.id} joined group: ${groupId}`);
+    });
+
+    socket.on('leave_group', (groupId) => {
+        socket.leave(groupId);
+        console.log(`User ${socket.id} left group: ${groupId}`);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected:', socket.id);
+    });
+});
+
+// Make io accessible in routes
+app.set('socketio', io);
+
+// Middleware
+
 app.use((req, res, next) => {
     const origin = req.headers.origin;
     if (allowedOrigins.includes(origin) || !origin) {
@@ -54,6 +88,6 @@ app.use(require('./middleware/error'));
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

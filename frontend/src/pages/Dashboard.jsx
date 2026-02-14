@@ -181,19 +181,19 @@ const Dashboard = () => {
                 <MetricWidget
                     label="Total Income"
                     value={`₹${(totalIncome / 1000).toFixed(1)}K`}
-                    trend="Dynamic"
+                    trend=""
                     isUp={true}
                 />
                 <MetricWidget
                     label="Current Expenses"
                     value={`₹${(totalExpenses / 1000).toFixed(1)}K`}
-                    trend="In-Memory"
+                    trend=""
                     isUp={false}
                 />
                 <MetricWidget
                     label="Profit Margin"
                     value={`${profitMargin}%`}
-                    trend="Real-time"
+                    trend=""
                     isUp={profitMargin > 50}
                 />
             </section>

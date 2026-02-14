@@ -117,6 +117,106 @@
     margin: 0;
 }
 
+/* Expense Itemization Styling */
+.expense-categories {
+    margin: 10px 0;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 12px;
+}
+
+.expense-categories label {
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+}
+
+.expense-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.ex-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.ex-field span {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #666;
+}
+
+.ex-field input {
+    width: 100% !important;
+    padding: 8px !important;
+    font-size: 0.9rem !important;
+}
+
+/* Profit Results Breakdown */
+.profit-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+    background: white;
+    border-radius: 12px;
+}
+
+.p-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.p-item span:first-child {
+    color: #888;
+}
+
+/* Sensitivity Section */
+.sensitivity-section {
+    margin-top: 20px;
+    border-top: 1px dashed #ccc;
+    padding-top: 20px;
+}
+
+.sensitivity-toggle {
+    width: 100%;
+    background: none;
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sensitivity-toggle:hover {
+    background: var(--color-primary-light);
+    color: white;
+}
+
+.sensitivity-table {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.s-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 6px;
+    font-weight: 600;
+}
+
 .profit-placeholder {
     display: flex;
     flex-direction: column;

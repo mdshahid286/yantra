@@ -21,24 +21,48 @@ const VoiceAssistant = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
-    // Play audio response
-    const playAudio = async (text) => {
-        try {
-            const response = await API.post('/ai/speak', { text }, {
-                responseType: 'blob',
-                timeout: 30000
-            });
-            const url = URL.createObjectURL(response.data);
-            const audio = new Audio(url);
-            audio.play();
-        } catch (error) {
-            console.error('Audio playback error:', error);
-            // Silently fail - don't show error to user for TTS
-        }
+    // Helper to format text with **bold**
+    const formatMessage = (text) => {
+        if (!text) return "";
+        // Split by **text**
+        const parts = text.split(/(\*\*.*?\*\*)/g);
+        return parts.map((part, index) => {
+            if (part.startsWith('**') && part.endsWith('**')) {
+                // Remove asterisks and wrap in strong
+                return <strong key={index}>{part.slice(2, -2)}</strong>;
+            }
+            return part;
+        });
+    };
+
+    // Helper to clean text for TTS (remove markdown)
+    const cleanTextForTTS = (text) => {
+        if (!text) return "";
+        return text.replace(/\*\*/g, '').replace(/\*/g, '').trim();
+    };
+
+    // Play audio response using Browser API
+    const playAudio = (text) => {
+        if (!text) return;
+
+        const cleanText = cleanTextForTTS(text);
+
+        // Stop any current speech
+        window.speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+
+        // Optional: Attempt to set a voice (browsers have different voices)
+        // const voices = window.speechSynthesis.getVoices();
+        // utterance.voice = voices.find(v => v.lang.includes('en')) || voices[0];
+
+        utterance.onerror = (e) => console.error('Speech synthesis error:', e);
+
+        window.speechSynthesis.speak(utterance);
     };
 
     // Send message to AI
-    const handleSend = async (text = inputText) => {
+    const handleSend = async (text = inputText, autoPlay = false) => {
         if (!text.trim()) return;
 
         const userMsg = { id: Date.now(), type: 'user', text: text.trim() };
@@ -62,6 +86,10 @@ const VoiceAssistant = () => {
             };
 
             setMessages(prev => [...prev, aiResponse]);
+
+            if (autoPlay) {
+                playAudio(aiText);
+            }
 
         } catch (error) {
             console.error("AI assistant error:", error);
@@ -111,14 +139,14 @@ const VoiceAssistant = () => {
                         const formData = new FormData();
                         formData.append('audio', audioBlob, 'recording.webm');
 
-                        const response = await API.post('/ai/listen', formData, {
+                        const response = await axios.post('http://localhost:5000/api/voice/stt', formData, {
                             headers: { 'Content-Type': 'multipart/form-data' },
                             timeout: 30000
                         });
 
                         const transcript = response.data.transcript;
                         if (transcript && transcript.trim()) {
-                            handleSend(transcript);
+                            handleSend(transcript, true);
                         } else {
                             const errorMsg = {
                                 id: Date.now(),
@@ -180,13 +208,12 @@ const VoiceAssistant = () => {
                                     {msg.type === 'ai' ? <FaRobot /> : <FaUser />}
                                 </div>
                                 <div className="message-content">
-                                    {msg.text}
+                                    {formatMessage(msg.text)}
                                     {msg.type === 'ai' && msg.text && msg.text.length < 500 && (
                                         <button
                                             className="play-btn-mini"
                                             onClick={() => playAudio(msg.text)}
                                             title="Play audio (TTS)"
-                                            style={{ display: 'none' }}
                                         >
                                             <FaPlay />
                                         </button>

@@ -185,6 +185,49 @@
     line-height: 1.4;
 }
 
+/* UI Enhancements */
+.crop-selector-modern {
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.9);
+    font-weight: 700;
+    color: var(--color-primary-dark);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+}
+
+.crop-selector-modern:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+.loading-blur {
+    filter: blur(4px);
+    pointer-events: none;
+    transition: filter 0.3s ease;
+}
+
+.badge-modern.sell {
+    background: #ffebee;
+    color: #d32f2f;
+}
+
+.rec-box.sell {
+    background: #fff5f5;
+    border: 1px solid #ffcdd2;
+}
+
+.rec-box.sell .rec-icon {
+    background: #d32f2f;
+}
+
+.rec-box.sell .rec-content strong {
+    color: #c62828;
+}
+
 @media (max-width: 1024px) {
     .market-grid {
         grid-template-columns: 1fr;

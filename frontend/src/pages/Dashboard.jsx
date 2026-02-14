@@ -49,20 +49,24 @@ const Dashboard = () => {
     const navigate = useNavigate();
     const [weather, setWeather] = React.useState(null);
     const [marketTrends, setMarketTrends] = React.useState([]);
+    const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
         const fetchMarketTrends = async () => {
+            console.log("[Dashboard] Fetching Market Trends...");
             try {
                 const response = await API.get('/market/trends');
+                console.log("[Dashboard] AI Trends Response:", response.data);
                 if (response.data.success) {
                     setMarketTrends(response.data.data);
                 }
             } catch (error) {
                 console.error("Market trends error:", error);
+            } finally {
+                setLoading(false);
             }
         };
         fetchMarketTrends();
-        setLoading(false);
     }, []);
 
     return (

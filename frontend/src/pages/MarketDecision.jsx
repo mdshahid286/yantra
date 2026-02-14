@@ -12,30 +12,41 @@ import '../styles/MarketDecision.css';
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
 const MarketDecision = () => {
+    const [selectedCrop, setSelectedCrop] = useState('Wheat');
+    const [loading, setLoading] = useState(false);
     const [marketInfo, setMarketInfo] = useState({
         currentPrice: 2450,
         trend: "Stable",
-        recommendation: "Hold"
+        recommendation: "Hold",
+        history: [],
+        news: [],
+        logic: []
     });
 
-    useEffect(() => {
-        const fetchMarket = async () => {
-            try {
-                const response = await API.post('/market', { crop: 'Wheat' });
-                setMarketInfo(response.data);
-            } catch (error) {
-                console.error('Market data fetch error:', error);
-            }
-        };
-        fetchMarket();
-    }, []);
+    const fetchMarket = async (cropName) => {
+        setLoading(true);
+        console.log(`[Frontend] Fetching AI Market Data for: ${cropName}`);
+        try {
+            const response = await API.post('/market', { crop: cropName });
+            console.log("[Frontend] Received AI Data:", response.data);
+            setMarketInfo(response.data);
+        } catch (error) {
+            console.error('Market data fetch error:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    const data = {
-        labels: ['1st Feb', '4th Feb', '7th Feb', '10th Feb', '13th Feb'],
+    useEffect(() => {
+        fetchMarket(selectedCrop);
+    }, [selectedCrop]);
+
+    const chartData = {
+        labels: marketInfo.history.length > 0 ? marketInfo.history.map(h => h.date) : ['1st Feb', '4th Feb', '7th Feb', '10th Feb', '13th Feb'],
         datasets: [
             {
-                label: 'Current Price',
-                data: [2200, 2280, 2250, 2350, 2450],
+                label: `Current Price (${selectedCrop})`,
+                data: marketInfo.history.length > 0 ? marketInfo.history.map(h => h.price) : [2200, 2280, 2250, 2350, 2450],
                 borderColor: '#2E7D32',
                 backgroundColor: (context) => {
                     const ctx = context.chart.ctx;
@@ -50,14 +61,6 @@ const MarketDecision = () => {
                 pointHoverRadius: 8,
                 pointBackgroundColor: '#fff',
                 pointBorderWidth: 3,
-            },
-            {
-                label: 'Previous Year Avg',
-                data: [2100, 2150, 2120, 2180, 2200],
-                borderColor: '#999',
-                borderDash: [5, 5],
-                fill: false,
-                pointRadius: 0,
             }
         ],
     };
@@ -70,7 +73,7 @@ const MarketDecision = () => {
             tooltip: {
                 backgroundColor: 'rgba(255, 255, 255, 0.9)',
                 titleColor: '#333',
-                bodyColor: '#666',
+                RolandBodyColor: '#666',
                 borderColor: '#eee',
                 borderWidth: 1,
                 padding: 12,
@@ -98,31 +101,45 @@ const MarketDecision = () => {
                     <p>Real-time commodity analytics & price forecasting</p>
                 </div>
                 <div className="market-badges">
-                    <span className="badge glass-card"><FaGlobe /> Global Market: Up 2.4%</span>
-                    <span className="badge glass-card"><FaRegClock /> Next Update: 2h 15m</span>
+                    <select
+                        value={selectedCrop}
+                        onChange={(e) => setSelectedCrop(e.target.value)}
+                        className="crop-selector-modern"
+                    >
+                        <option value="Wheat">Wheat</option>
+                        <option value="Rice">Rice</option>
+                        <option value="Tomato">Tomato</option>
+                        <option value="Onion">Onion</option>
+                        <option value="Soybean">Soybean</option>
+                        <option value="Cotton">Cotton</option>
+                    </select>
+                    <span className="badge glass-card"><FaGlobe /> AI Mandi Index: Global</span>
                 </div>
             </header>
 
-            <div className="market-grid">
+            <div className={`market-grid ${loading ? 'loading-blur' : ''}`}>
                 {/* Analytics Card */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
+                    key={selectedCrop + "-chart"}
                     className="analytics-card glass-card"
                 >
                     <div className="analytics-header">
                         <div className="asset-info">
-                            <h3>Wheat (Grade A)</h3>
-                            <p>Mandi: Pune APMC</p>
+                            <h3>{selectedCrop} (Grade A)</h3>
+                            <p>Mandi: Regional Mandi Aggregator</p>
                         </div>
                         <div className="price-tag">
                             <span className="current-price">₹{marketInfo.currentPrice.toLocaleString()}</span>
-                            <span className="price-change positive"><FaArrowUp /> {marketInfo.trend} today</span>
+                            <span className={`price-change ${marketInfo.trend === 'Decreasing' ? 'negative' : 'positive'}`}>
+                                {marketInfo.trend === 'Decreasing' ? <FaArrowDown /> : <FaArrowUp />} {marketInfo.trend}
+                            </span>
                         </div>
                     </div>
 
                     <div className="chart-wrapper">
-                        <Line options={options} data={data} />
+                        <Line options={options} data={chartData} />
                     </div>
                 </motion.div>
 
@@ -131,11 +148,14 @@ const MarketDecision = () => {
                     <motion.div
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
+                        key={selectedCrop + "-decision"}
                         className="decision-card glass-card"
                     >
-                        <div className="badge-modern hold">Recommended</div>
+                        <div className={`badge-modern ${marketInfo.recommendation.toLowerCase().includes('sell') ? 'sell' : 'hold'}`}>
+                            AI Recommended
+                        </div>
                         <h2>Price Prediction</h2>
-                        <div className="rec-box hold">
+                        <div className={`rec-box ${marketInfo.recommendation.toLowerCase().includes('sell') ? 'sell' : 'hold'}`}>
                             <div className="rec-icon"><FaMoneyBillWave /></div>
                             <div className="rec-content">
                                 <strong>Strategic ACTION</strong>
@@ -144,29 +164,40 @@ const MarketDecision = () => {
                         </div>
 
                         <ul className="logic-list">
-                            <li>Low arrival rates in Northern Mandis</li>
-                            <li>Expected procurement demand increase</li>
-                            <li>Favorable moisture levels in current crop</li>
+                            {marketInfo.logic.map((l, i) => <li key={i}>{l}</li>)}
+                            {marketInfo.logic.length === 0 && (
+                                <>
+                                    <li>Analyzing supply-demand curves...</li>
+                                    <li>Evaluating weather impact on logistics...</li>
+                                    <li>Monitoring export policy shifts...</li>
+                                </>
+                            )}
                         </ul>
 
-                        <button className="btn btn-primary btn-block">Set Price Alert @ ₹2,600</button>
+                        <button className="btn btn-primary btn-block">Set Price Alert for {selectedCrop}</button>
                     </motion.div>
 
                     <motion.div
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.2 }}
+                        key={selectedCrop + "-news"}
                         className="news-card glass-card"
                     >
-                        <h3>Market News</h3>
-                        <div className="news-item">
-                            <span className="news-date">10 Mins Ago</span>
-                            <p>Govt considers increasing minimum support price (MSP) for next season.</p>
-                        </div>
-                        <div className="news-item">
-                            <span className="news-date">2 Hours Ago</span>
-                            <p>New export warehouse facility opened in Mumbai Port.</p>
-                        </div>
+                        <h3>{selectedCrop} Market News</h3>
+                        {marketInfo.news.length > 0 ? (
+                            marketInfo.news.map((item, i) => (
+                                <div key={i} className="news-item">
+                                    <span className="news-date">{item.time}</span>
+                                    <p>{item.text}</p>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="news-item">
+                                <span className="news-date">Just Now</span>
+                                <p>Checking live news feeds for {selectedCrop}...</p>
+                            </div>
+                        )}
                     </motion.div>
                 </div>
             </div>

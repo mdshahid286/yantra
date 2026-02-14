@@ -168,7 +168,7 @@ const MarketDecision = () => {
                         animate={{ opacity: 1, x: 0 }}
                         className="decision-card glass-card buy-side"
                     >
-                        <h3>📥 Buying Tips</h3>
+                        <h3>Buying Tips</h3>
                         <ul className="tips-list">
                             {marketInfo.buyingTips.map((tip, i) => <li key={i}>{tip}</li>)}
                         </ul>
@@ -180,7 +180,7 @@ const MarketDecision = () => {
                         transition={{ delay: 0.2 }}
                         className="decision-card glass-card sell-side"
                     >
-                        <h3>📤 Selling Tips</h3>
+                        <h3>Selling Tips</h3>
                         <ul className="tips-list">
                             {marketInfo.sellingTips.map((tip, i) => <li key={i}>{tip}</li>)}
                         </ul>
@@ -199,8 +199,6 @@ const MarketDecision = () => {
         </div>
     );
 };
-        </div >
-    );
-};
+
 
 export default MarketDecision;

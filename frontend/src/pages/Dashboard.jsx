@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import {
     FaCloudSun, FaChartLine, FaRobot, FaMicrophone, FaLeaf,
     FaCoins, FaUniversity, FaCalculator, FaBell, FaArrowRight,
-    FaArrowUp, FaArrowDown
+    FaArrowUp, FaArrowDown, FaUsers
 } from 'react-icons/fa';
 import API from '../services/api';
 import '../styles/Dashboard.css';
@@ -49,25 +49,55 @@ const Dashboard = () => {
     const navigate = useNavigate();
     const [weather, setWeather] = React.useState(null);
     const [marketTrends, setMarketTrends] = React.useState([]);
+    const [expenses, setExpenses] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
-        const fetchMarketTrends = async () => {
+        const fetchDashboardData = async () => {
             console.log("[Dashboard] Fetching Market Trends...");
             try {
+                // Fetch market trends via API
                 const response = await API.get('/market/trends');
-                console.log("[Dashboard] AI Trends Response:", response.data);
                 if (response.data.success) {
                     setMarketTrends(response.data.data);
                 }
+
+                // Fetch local expenses
+                const savedExp = localStorage.getItem('yantra_expenses');
+                if (savedExp) {
+                    setExpenses(JSON.parse(savedExp));
+                } else {
+                    // Fallback to initial samples if empty
+                    const samples = [
+                        { amount: 4500, type: 'debit' },
+                        { amount: 25000, type: 'credit' },
+                        { amount: 3200, type: 'debit' },
+                        { amount: 1500, type: 'debit' }
+                    ];
+                    setExpenses(samples);
+                }
             } catch (error) {
-                console.error("Market trends error:", error);
+                console.error("Dashboard data error:", error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchMarketTrends();
+        fetchDashboardData();
+
+        // Listen for storage changes (if tab is updated)
+        const handleStorageChange = () => {
+            const savedExp = localStorage.getItem('yantra_expenses');
+            if (savedExp) setExpenses(JSON.parse(savedExp));
+        };
+        window.addEventListener('storage', handleStorageChange);
+        return () => window.removeEventListener('storage', handleStorageChange);
     }, []);
+
+    // Calculate Dynamic Metrics
+    const totalIncome = expenses.filter(e => e.type === 'credit').reduce((acc, current) => acc + current.amount, 0);
+    const totalExpenses = expenses.filter(e => e.type === 'debit').reduce((acc, current) => acc + current.amount, 0);
+    const profit = totalIncome - totalExpenses;
+    const profitMargin = totalIncome > 0 ? Math.round((profit / totalIncome) * 100) : 0;
 
     return (
         <div className="dashboard-wrapper">
@@ -148,9 +178,24 @@ const Dashboard = () => {
 
             {/* Metrics Row */}
             <section className="metrics-row">
-                <MetricWidget label="Total Income" value="₹12.4L" trend="12%" isUp={true} />
-                <MetricWidget label="Current Expenses" value="₹4.2L" trend="3%" isUp={false} />
-                <MetricWidget label="Profit Margin" value="66%" trend="5%" isUp={true} />
+                <MetricWidget
+                    label="Total Income"
+                    value={`₹${(totalIncome / 1000).toFixed(1)}K`}
+                    trend="Dynamic"
+                    isUp={true}
+                />
+                <MetricWidget
+                    label="Current Expenses"
+                    value={`₹${(totalExpenses / 1000).toFixed(1)}K`}
+                    trend="In-Memory"
+                    isUp={false}
+                />
+                <MetricWidget
+                    label="Profit Margin"
+                    value={`${profitMargin}%`}
+                    trend="Real-time"
+                    isUp={profitMargin > 50}
+                />
             </section>
 
             {/* Features Nav */}
@@ -207,6 +252,14 @@ const Dashboard = () => {
                         color="#00897B"
                         delay={0.6}
                         onClick={() => navigate('/profit')}
+                    />
+                    <FeatureCard
+                        icon={<FaUsers />}
+                        title="Kisan Community"
+                        desc="Connect with local farmers near you"
+                        color="#FF5722"
+                        delay={0.7}
+                        onClick={() => navigate('/community')}
                     />
                 </div>
             </section>

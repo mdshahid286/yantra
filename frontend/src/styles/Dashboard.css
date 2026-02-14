@@ -62,33 +62,62 @@
 .weather-featured {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    padding: var(--spacing-lg);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(187, 222, 251, 0.4));
+    justify-content: center;
+    padding: var(--spacing-xl);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(200, 230, 201, 0.4));
+    transition: all 0.3s ease;
 }
 
 .weather-header {
     display: flex;
     align-items: center;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-lg);
 }
 
 .w-icon {
-    fontSize: 4rem;
+    font-size: 3.5rem;
     color: var(--color-accent);
+    filter: drop-shadow(0 2px 4px rgba(255, 183, 77, 0.3));
 }
 
 .w-text h3 {
-    fontSize: 1.8rem;
+    font-size: 1.8rem;
     margin: 0;
+    color: var(--color-primary-dark);
+    font-family: var(--font-family-display);
 }
 
-.weather-forecast {
+.w-text span {
+    color: #556655;
+    font-weight: 600;
+}
+
+.weather-details-row {
     display: flex;
-    justify-content: space-between;
-    margin-top: var(--spacing-lg);
-    padding-top: var(--spacing-md);
+    gap: 40px;
+    padding-top: var(--spacing-lg);
     border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.w-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.w-stat .label {
+    font-size: 0.85rem;
+    color: #778877;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.w-stat .value {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--color-primary-dark);
 }
 
 .weather-forecast .day {

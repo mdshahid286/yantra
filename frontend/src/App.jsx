@@ -12,6 +12,7 @@ import GovernmentSchemes from './pages/GovernmentSchemes';
 import FertilizerCalculator from './pages/FertilizerCalculator';
 import ExpenseTracker from './pages/ExpenseTracker';
 import ProfitPrediction from './pages/ProfitPrediction';
+import Community from './pages/Community';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import './components/Layout.css';
@@ -49,6 +50,7 @@ function App() {
           <Route path="/fertilizer" element={<FertilizerCalculator />} />
           <Route path="/expenses" element={<ExpenseTracker />} />
           <Route path="/profit" element={<ProfitPrediction />} />
+          <Route path="/community" element={<Community />} />
 
           {/* Fallback */}
           <Route path="*" element={<NotFound />} />

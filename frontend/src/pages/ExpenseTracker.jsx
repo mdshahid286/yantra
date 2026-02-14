@@ -15,65 +15,58 @@ import '../styles/ExpenseTracker.css';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const ExpenseTracker = () => {
-    const [expenses, setExpenses] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [newExp, setNewExp] = useState({ category: '', amount: '', date: '', type: 'debit' });
+    // Load from localStorage or use sample data
+    const [expenses, setExpenses] = useState(() => {
+        const saved = localStorage.getItem('yantra_expenses');
+        return saved ? JSON.parse(saved) : [
+            { _id: '1', category: 'Seeds for Wheat', amount: 4500, date: '2026-02-10', type: 'debit', createdAt: '2026-02-10' },
+            { _id: '2', category: 'Wheat Sale (Mandi)', amount: 25000, date: '2026-02-12', type: 'credit', createdAt: '2026-02-12' },
+            { _id: '3', category: 'Fertilizers', amount: 3200, date: '2026-02-13', type: 'debit', createdAt: '2026-02-13' },
+            { _id: '4', category: 'Borewell Repair', amount: 1500, date: '2026-02-14', type: 'debit', createdAt: '2026-02-14' }
+        ];
+    });
+
+    const [loading, setLoading] = useState(false);
+    const [newExp, setNewExp] = useState({ category: '', amount: '', date: new Date().toISOString().split('T')[0], type: 'debit' });
     const [isListening, setIsListening] = useState(false);
 
-    const user = JSON.parse(localStorage.getItem('user'));
-
+    // Persist to localStorage
     useEffect(() => {
-        fetchExpenses();
-    }, []);
+        localStorage.setItem('yantra_expenses', JSON.stringify(expenses));
+    }, [expenses]);
 
-    const fetchExpenses = async () => {
-        try {
-            const response = await API.get('/expense');
-            setExpenses(response.data);
-        } catch (error) {
-            console.error('Error fetching expenses:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleAdd = async (e) => {
+    const handleAdd = (e) => {
         e.preventDefault();
         if (!newExp.category || !newExp.amount) return;
 
-        try {
-            const payload = {
-                ...newExp,
-                userId: user?._id,
-                amount: parseFloat(newExp.amount)
-            };
-            const response = await API.post('/expense', payload);
-            setExpenses([response.data, ...expenses]);
-            setNewExp({ category: '', amount: '', date: '', type: 'debit' });
-        } catch (error) {
-            console.error('Error adding expense:', error);
-            alert('Failed to save expense.');
-        }
+        const newItem = {
+            ...newExp,
+            _id: Math.random().toString(36).substr(2, 9),
+            amount: parseFloat(newExp.amount),
+            createdAt: new Date().toISOString()
+        };
+
+        setExpenses([newItem, ...expenses]);
+        setNewExp({ category: '', amount: '', date: new Date().toISOString().split('T')[0], type: 'debit' });
+    };
+
+    const handleDelete = (id) => {
+        setExpenses(expenses.filter(e => e._id !== id));
     };
 
     const totalDebit = expenses.filter(e => e.type === 'debit').reduce((acc, c) => acc + c.amount, 0);
     const totalCredit = expenses.filter(e => e.type === 'credit').reduce((acc, c) => acc + c.amount, 0);
 
-    const handleDelete = async (id) => {
-        try {
-            await API.delete(`/expense/${id}`);
-            setExpenses(expenses.filter(e => e._id !== id));
-        } catch (error) {
-            console.error('Error deleting expense:', error);
-            alert('Failed to delete expense.');
-        }
-    };
-
     const chartData = {
-        labels: ['Seeds', 'Fertilizer', 'Fuel', 'Labor', 'Others'],
+        labels: ['Seeds', 'Fertilizer', 'Labor', 'Others'],
         datasets: [{
-            label: 'Monthly Spending',
-            data: [15400, 8200, 3100, 12000, 5000],
+            label: 'Spending Breakdown',
+            data: [
+                expenses.filter(e => e.category.toLowerCase().includes('seed')).reduce((a, b) => a + b.amount, 0) || 4500,
+                expenses.filter(e => e.category.toLowerCase().includes('fert')).reduce((a, b) => a + b.amount, 0) || 3200,
+                expenses.filter(e => e.category.toLowerCase().includes('labor')).reduce((a, b) => a + b.amount, 0) || 1200,
+                expenses.filter(e => !['seed', 'fert', 'labor'].some(k => e.category.toLowerCase().includes(k))).reduce((a, b) => a + b.amount, 0) || 5000
+            ],
             backgroundColor: 'rgba(46, 125, 50, 0.6)',
             borderRadius: 8,
         }]
@@ -172,7 +165,7 @@ const ExpenseTracker = () => {
                                     />
                                 </div>
                             </div>
-                            <button type="submit" className="btn btn-primary">Sync to Ledger</button>
+                            <button type="submit" className="btn btn-primary">Add Entry</button>
                         </form>
                     </motion.div>
 

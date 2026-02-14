@@ -2,205 +2,207 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     FaLeaf, FaRobot, FaChartLine, FaShieldAlt,
-    FaQuoteLeft, FaHandHoldingHeart, FaLightbulb, FaCheckCircle
+    FaMicrophone, FaQuoteLeft, FaCheckCircle, FaExclamationTriangle
 } from 'react-icons/fa';
-import { motion } from 'framer-motion';
 import '../styles/LandingPage.css';
 
 const LandingPage = () => {
     const navigate = useNavigate();
 
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: { staggerChildren: 0.2 }
-        }
-    };
-
-    const itemVariants = {
-        hidden: { y: 20, opacity: 0 },
-        visible: { y: 0, opacity: 1 }
-    };
-
     return (
         <div className="landing-page">
-            <nav className="landing-nav container">
-                <div className="logo">
-                    <FaLeaf className="logo-icon" />
-                    <span>Yantara AI</span>
-                </div>
-                <div className="nav-links">
-                    <button className="btn btn-secondary" onClick={() => navigate('/login')}>Login</button>
-                    <button className="btn btn-primary" onClick={() => navigate('/login')}>Join Now</button>
+            <nav className="landing-nav">
+                <div className="container nav-content">
+                    <div className="logo" onClick={() => navigate('/')}>
+                        <FaLeaf className="logo-icon" />
+                        <span>AgriSmart AI</span>
+                    </div>
+                    <div className="nav-links">
+                        <button className="btn btn-secondary" onClick={() => navigate('/login')}>Login</button>
+                        <button className="btn btn-primary" onClick={() => navigate('/login')}>Register</button>
+                    </div>
                 </div>
             </nav>
 
             {/* Hero Section */}
             <header className="hero-section">
-                <motion.div
-                    initial={{ opacity: 0, x: -50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8 }}
-                    className="hero-content"
-                >
-                    <div className="badge-modern">Agricultural Revolution 2.0</div>
-                    <h1 className="hero-title">
-                        Empowering <span className="highlight">Farmers</span> with Precision Intelligence
-                    </h1>
-                    <p className="hero-subtitle">
-                        Overcome agricultural challenges with AI-driven diagnostics, market forecasting,
-                        and personalized advisory. The future of farming is here.
-                    </p>
-                    <div className="hero-buttons">
-                        <button className="btn btn-primary btn-lg" onClick={() => navigate('/login')}>Launch Dashboard</button>
-                        <button className="btn btn-secondary btn-lg">Watch Demo</button>
-                    </div>
-                </motion.div>
-
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 1 }}
-                    className="hero-visual"
-                >
-                    <div className="glass-card hero-stats-card">
-                        <div className="stat-item">
-                            <span className="stat-value">95%</span>
-                            <span className="stat-label">Accuracy</span>
+                <div className="container hero-content-wrapper">
+                    <div className="hero-text">
+                        <span className="badge-modern">Revolutionizing Agriculture</span>
+                        <h1 className="hero-title">
+                            The Future of <span className="highlight">Indian Farming</span> is Here.
+                        </h1>
+                        <p className="hero-subtitle">
+                            Empower your fields with Gemini AI. From instant disease detection to real-time market prediction,
+                            Yantra is your digital partner in agricultural success.
+                        </p>
+                        <div className="hero-buttons">
+                            <button className="btn btn-primary btn-lg" onClick={() => navigate('/login')}>Empower Your Farm</button>
+                            <button className="btn btn-secondary btn-lg">Watch Overview</button>
                         </div>
-                        <div className="stat-divider"></div>
-                        <div className="stat-item">
-                            <span className="stat-value">10k+</span>
-                            <span className="stat-label">Farmers</span>
+                        <div className="hero-stats">
+                            <div className="stat-item">
+                                <span className="stat-number">98%</span>
+                                <span className="stat-label">Prediction Accuracy</span>
+                            </div>
+                            <div className="stat-item">
+                                <span className="stat-number">24/7</span>
+                                <span className="stat-label">AI Advisory</span>
+                            </div>
                         </div>
                     </div>
-                </motion.div>
+                    <div className="hero-visual">
+                        <div className="hero-image-placeholder">
+                            <img src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?q=80&w=2070&auto=format&fit=crop" alt="Smart Farming" />
+                            <div className="floating-card ai-status">
+                                <FaRobot /> AI System: Active
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </header>
 
             {/* Problem Section */}
-            <section className="problem-section container section-padding">
-                <div className="section-header text-center">
-                    <h2 className="section-title">The Struggle is Real</h2>
-                    <p className="section-subtitle">Why traditional farming is becoming harder every day</p>
-                </div>
-                <div className="problem-grid">
-                    <div className="problem-card">
-                        <div className="p-icon"><FaShieldAlt /></div>
-                        <h4>Undiagnosed Diseases</h4>
-                        <p>Crop failures due to late detection of pests and fungal infections cost billions.</p>
+            <section className="problem-section section-padding">
+                <div className="container">
+                    <div className="section-header text-center">
+                        <h2 className="section-title">The Challenges You Face</h2>
+                        <p className="section-subtitle">Real problems require modern solutions. We understand the soil and the toil.</p>
                     </div>
-                    <div className="problem-card">
-                        <div className="p-icon"><FaChartLine /></div>
-                        <h4>Market Volatility</h4>
-                        <p>Farmers lose money because they don't know the right time to sell their harvest.</p>
-                    </div>
-                    <div className="problem-card">
-                        <div className="p-icon"><FaLightbulb /></div>
-                        <h4>Generic Advice</h4>
-                        <p>Standardized methods don't account for local soil health or specific weather patterns.</p>
+                    <div className="problem-grid">
+                        <div className="problem-card">
+                            <FaExclamationTriangle className="p-icon" />
+                            <h3>Unknown Diseases</h3>
+                            <p>Losing crops to mysterious pests and diseases because diagnosis takes too long or is unavailable.</p>
+                        </div>
+                        <div className="problem-card">
+                            <FaChartLine className="p-icon" />
+                            <h3>Price Uncertainty</h3>
+                            <p>Selling at loss-making rates because you lack visibility into the 30-day Mandi trends and outlook.</p>
+                        </div>
+                        <div className="problem-card">
+                            <FaLeaf className="p-icon" />
+                            <h3>Poor Yields</h3>
+                            <p>Using the wrong fertilizers or growing weak crops due to lack of advanced soil health data analysis.</p>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            {/* Proposed Solution */}
-            <section className="solution-section">
-                <div className="container solution-content">
-                    <div className="solution-text">
-                        <h2 className="section-title white">The Yantara Solution</h2>
-                        <p>We bridge the gap between technology and the field. Yantara AI uses satellite data,
-                            computer vision, and real-time mandi insights to give you a competitive edge.</p>
+            {/* Proposed Solution Section */}
+            <section className="solution-section section-padding">
+                <div className="container solution-wrapper">
+                    <div className="solution-image">
+                        <img src="https://images.unsplash.com/photo-1560493676-04071c5f467b?q=80&w=2068&auto=format&fit=crop" alt="AI Farmer Solution" />
+                        <div className="ai-overlay"></div>
+                    </div>
+                    <div className="solution-content">
+                        <h2 className="section-title">Our AI-Powered Solution</h2>
+                        <p>Yantra is more than just an app; it's a digital revolution in your pocket. Using Google's Gemini Pro, we've built a logic-driven assistant that speaks your language.</p>
                         <ul className="solution-list">
-                            <li><FaCheckCircle className="check-icon" /> 24/7 AI-Powered Field Advisory</li>
-                            <li><FaCheckCircle className="check-icon" /> Real-time Mandi Price Forecasting</li>
-                            <li><FaCheckCircle className="check-icon" /> Instant Visual Disease Diagnostics</li>
+                            <li><FaCheckCircle className="check-icon" /> <strong>Disease Scanner:</strong> Instant mobile diagnostics for 100+ plant varieties.</li>
+                            <li><FaCheckCircle className="check-icon" /> <strong>Mandi Intelligence:</strong> Big-data price forecasting for maximum profit.</li>
+                            <li><FaCheckCircle className="check-icon" /> <strong>Voice Guidance:</strong> Just talk to the app while working in the field.</li>
+                            <li><FaCheckCircle className="check-icon" /> <strong>Crop Recommendations:</strong> Data-driven soil health optimization.</li>
                         </ul>
-                    </div>
-                    <div className="solution-image-placeholder glass-card">
-                        <div className="ai-scanner-overlay"></div>
-                        <p>AI Neural Processing Visualization</p>
+                        <button className="btn btn-primary" onClick={() => navigate('/login')}>Start Your Success Story</button>
                     </div>
                 </div>
             </section>
 
-            {/* Features Detail */}
-            <section className="features-section container section-padding">
-                <h2 className="section-title text-center">Powerful Features</h2>
-                <div className="features-grid">
-                    <motion.div
-                        whileHover={{ y: -10 }}
-                        className="feature-card-modern glass-card"
-                    >
-                        <div className="f-icon green"><FaRobot /></div>
-                        <h3>Voice Assistant</h3>
-                        <p>Talk to Yantara in your local language. Get answers about soil, seeds, and subsidies instantly.</p>
-                    </motion.div>
-
-                    <motion.div
-                        whileHover={{ y: -10 }}
-                        className="feature-card-modern glass-card"
-                    >
-                        <div className="f-icon orange"><FaShieldAlt /></div>
-                        <h3>Vision Scan</h3>
-                        <p>Upload a photo of your leaf. Our neural network identifies 40+ common crop diseases in seconds.</p>
-                    </motion.div>
-
-                    <motion.div
-                        whileHover={{ y: -10 }}
-                        className="feature-card-modern glass-card"
-                    >
-                        <div className="f-icon blue"><FaChartLine /></div>
-                        <h3>Market Intelligence</h3>
-                        <p>Predictive analytics for crops. Know when to hold and when to gold (sell).</p>
-                    </motion.div>
-
-                    <motion.div
-                        whileHover={{ y: -10 }}
-                        className="feature-card-modern glass-card"
-                    >
-                        <div className="f-icon purple"><FaHandHoldingHeart /></div>
-                        <h3>Soil Health (N-P-K)</h3>
-                        <p>Upload your lab reports and get personalized fertilizer and crop rotation plans.</p>
-                    </motion.div>
+            {/* Core Features Grid */}
+            <section className="features-showcase section-padding">
+                <div className="container">
+                    <div className="section-header text-center">
+                        <h2 className="section-title">Everything You Need to Thrive</h2>
+                        <p className="section-subtitle">A suite of AI tools designed exclusively for Indian Agriculture.</p>
+                    </div>
+                    <div className="features-grid-modern">
+                        <div className="feature-card-modern glass-card">
+                            <div className="feature-card-image">
+                                <img src="https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?q=80&w=2070&auto=format&fit=crop" alt="Disease Detection" />
+                                <div className="f-icon orange"><FaShieldAlt /></div>
+                            </div>
+                            <div className="feature-card-content">
+                                <h3>Disease Detection</h3>
+                                <p>Advanced computer vision identifies 50+ crop diseases in seconds. Get organic and chemical remedies instantly.</p>
+                            </div>
+                        </div>
+                        <div className="feature-card-modern glass-card">
+                            <div className="feature-card-image">
+                                <img src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2070&auto=format&fit=crop" alt="AI Advisor" />
+                                <div className="f-icon green"><FaRobot /></div>
+                            </div>
+                            <div className="feature-card-content">
+                                <h3>AI Crop Advisor</h3>
+                                <p>Upload soil data and get personalized recommendations on the best crops to grow for your specific land.</p>
+                            </div>
+                        </div>
+                        <div className="feature-card-modern glass-card">
+                            <div className="feature-card-image">
+                                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop" alt="Market Intelligence" />
+                                <div className="f-icon blue"><FaChartLine /></div>
+                            </div>
+                            <div className="feature-card-content">
+                                <h3>Market Intelligence</h3>
+                                <p>30-day historical trends and predictive selling tips to help you negotiate better Mandi prices.</p>
+                            </div>
+                        </div>
+                        <div className="feature-card-modern glass-card">
+                            <div className="feature-card-image">
+                                <img src="https://images.unsplash.com/photo-1589254065878-42c9da997008?q=80&w=2070&auto=format&fit=crop" alt="Voice Assistant" />
+                                <div className="f-icon purple"><FaMicrophone /></div>
+                            </div>
+                            <div className="feature-card-content">
+                                <h3>Voice Assistant</h3>
+                                <p>Hands-free assistance. Get answers to farming questions in your local language while you're in the field.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
             {/* Testimonials */}
-            <section className="testimonials-section section-padding">
+            <section className="testimonials section-padding">
                 <div className="container">
-                    <h2 className="section-title text-center">Words From the Field</h2>
+                    <h2 className="section-title text-center">Words from the Field</h2>
                     <div className="testimonials-grid">
                         <div className="testimonial-card glass-card">
                             <FaQuoteLeft className="quote-icon" />
-                            <p>"Yantara helped me save my whole tomato crop. The disease detection was spot on and suggested a remedy I didn't know."</p>
+                            <p>"Yantra's market intelligence helped me wait for the right week to sell my wheat. I made 20% more profit this season!"</p>
                             <div className="t-author">
                                 <strong>Rajesh Kumar</strong>
-                                <span>Farmer, Haryana</span>
+                                <span>Wheat Farmer, Punjab</span>
                             </div>
                         </div>
                         <div className="testimonial-card glass-card">
                             <FaQuoteLeft className="quote-icon" />
-                            <p>"The market trends feature is a game changer. I waited for 3 extra days as advised by AI and made 15% more profit."</p>
+                            <p>"The disease detection is like magic. I saved my tomato crop after identifying late blight early through the app."</p>
                             <div className="t-author">
-                                <strong>Sandeep Singh</strong>
-                                <span>Grain Merchant, Punjab</span>
+                                <strong>Suresh Patil</strong>
+                                <span>Vegetable Farm, Maharashtra</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* CTA Footer */}
+            {/* Final CTA */}
             <section className="cta-section text-center">
                 <div className="container">
-                    <h2>Ready to Transform Your Farm?</h2>
-                    <p>Join thousands of farmers making smarter decisions every day.</p>
-                    <button className="btn btn-primary btn-lg" onClick={() => navigate('/login')}>Get Started for Free</button>
+                    <h2>Ready to Smart-Farm?</h2>
+                    <p>Join thousands of farmers using AI to increase their yield and income.</p>
+                    <button className="btn btn-primary btn-lg" onClick={() => navigate('/login')}>Start Your AI Journey</button>
                 </div>
             </section>
 
-            <footer className="landing-footer text-center">
-                <p>© {new Date().getFullYear()} Yantara AI. Built with ❤️ for Indian Farmers.</p>
+            <footer className="landing-footer">
+                <div className="container footer-content">
+                    <div className="footer-logo">
+                        <FaLeaf /> <span>AgriSmart AI</span>
+                    </div>
+                    <p>© {new Date().getFullYear()} AgriSmart Technologies. Empowering the Roots of India.</p>
+                </div>
             </footer>
         </div>
     );

@@ -44,6 +44,7 @@ app.use('/api/market', require('./routes/marketRoutes'));
 app.use('/api/profit', require('./routes/profitRoutes'));
 app.use('/api/voice', require('./routes/voiceRoutes'));
 app.use('/api/chatbot', require('./routes/chatbotRoutes'));
+app.use('/api/community', require('./routes/communityRoutes'));
 
 app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', message: 'Yantra API is running' });

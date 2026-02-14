@@ -14,8 +14,8 @@ exports.getMarketAnalysis = async (req, res) => {
 
         const prompt = `
 You are an expert Indian agricultural market analyst.
-Generate realistic, current market data and historical trends for ${crop} in India for the last 5 days.
-Also provide 2 recent related market news items and 3 biological/market logic points for the recommendation.
+Generate realistic, current market data and historical trends for ${crop} in India for the past 30 days (give 10-12 data points sampled across the month).
+Also provide 3 distinct Buying Tips, 3 distinct Selling Tips, and 3 Market Insights.
 
 Return ONLY valid JSON in this format:
 {
@@ -23,21 +23,17 @@ Return ONLY valid JSON in this format:
   "trend": "Increasing" or "Decreasing" or "Stable",
   "recommendation": "short advisory sentence",
   "history": [
-    {"date": "10th Feb", "price": 2200},
-    {"date": "11th Feb", "price": 2280},
-    {"date": "12th Feb", "price": 2300},
-    {"date": "13th Feb", "price": 2350},
+    {"date": "15th Jan", "price": 2100},
+    {"date": "20th Jan", "price": 2150},
+    {"date": "25th Jan", "price": 2200},
+    {"date": "1st Feb", "price": 2250},
+    {"date": "5th Feb", "price": 2300},
+    {"date": "10th Feb", "price": 2350},
     {"date": "14th Feb", "price": 2450}
   ],
-  "news": [
-    {"time": "10 Mins Ago", "text": "News item 1..."},
-    {"time": "2 Hours Ago", "text": "News item 2..."}
-  ],
-  "logic": [
-    "Logic point 1",
-    "Logic point 2",
-    "Logic point 3"
-  ]
+  "buyingTips": ["Tip 1", "Tip 2", "Tip 3"],
+  "sellingTips": ["Tip 1", "Tip 2", "Tip 3"],
+  "insights": ["Insight 1", "Insight 2", "Insight 3"]
 }
 `;
 
@@ -71,16 +67,13 @@ Return ONLY valid JSON in this format:
             trend: "Stable",
             recommendation: "Service temporarily unavailable. Using last known data.",
             history: [
-                { "date": "10th Feb", "price": 2400 },
-                { "date": "11th Feb", "price": 2410 },
-                { "date": "12th Feb", "price": 2420 },
-                { "date": "13th Feb", "price": 2440 },
+                { "date": "15th Jan", "price": 2300 },
+                { "date": "1st Feb", "price": 2400 },
                 { "date": "14th Feb", "price": 2450 }
             ],
-            news: [
-                { "time": "Now", "text": "AI market service is experiencing high load. Checking local Mandi manually is advised." }
-            ],
-            logic: ["Data link interrupted", "Server latency high"]
+            buyingTips: ["Monitor local mandi arrivals", "Check moisture content"],
+            sellingTips: ["Hold if storage is available", "Wait for MSP announcement"],
+            insights: ["Demand is steady", "Logistics are recovering"]
         });
     }
 };

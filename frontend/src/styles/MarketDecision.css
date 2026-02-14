@@ -228,6 +228,75 @@
     color: #c62828;
 }
 
+.main-analytics {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.insights-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+}
+
+.insight-box {
+    padding: var(--spacing-lg);
+}
+
+.insight-box h4 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-primary-dark);
+    margin-bottom: var(--spacing-md);
+}
+
+.decision-card.buy-side {
+    border-left: 6px solid #1976D2;
+    background: #e3f2fd22;
+}
+
+.decision-card.buy-side h3 {
+    color: #1565C0;
+    margin-bottom: 12px;
+}
+
+.decision-card.sell-side {
+    border-left: 6px solid #D32F2F;
+    background: #ffebee22;
+}
+
+.decision-card.sell-side h3 {
+    color: #C62828;
+    margin-bottom: 12px;
+}
+
+.tips-list {
+    padding-left: 20px;
+}
+
+.tips-list li {
+    font-size: 0.9rem;
+    color: #444;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.rec-card {
+    padding: var(--spacing-md);
+    background: var(--color-primary-dark);
+    color: white;
+    text-align: center;
+}
+
+.rec-card strong {
+    display: block;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
 @media (max-width: 1024px) {
     .market-grid {
         grid-template-columns: 1fr;

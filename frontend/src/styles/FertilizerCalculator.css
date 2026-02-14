@@ -1,92 +1,242 @@
-.fertilizer-page {
-    padding-top: var(--spacing-lg);
-}
-
-.calc-layout {
+.fert-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: var(--spacing-lg);
-    max-width: 600px;
-    margin: 0 auto;
+    gap: var(--spacing-xl);
 }
 
-.calc-form {
-    width: 100%;
+.fert-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+    min-height: 550px;
 }
 
-.input-with-unit {
+.calc-input-card {
+    padding: var(--spacing-xl);
     display: flex;
-    gap: var(--spacing-sm);
+    flex-direction: column;
 }
 
-.input-with-unit input {
+.card-header-pro {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: var(--spacing-xl);
+    color: var(--color-primary);
+    font-size: 1.25rem;
+}
+
+.fert-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.input-group-pro {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-group-pro label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #555;
+}
+
+.input-group-pro select,
+.input-group-pro input {
+    padding: 14px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.5);
+    font-size: 1rem;
+}
+
+.unit-input {
+    display: flex;
+    gap: 10px;
+}
+
+.unit-input input {
     flex: 2;
 }
 
-.input-with-unit select {
+.unit-input select {
     flex: 1;
 }
 
-select {
+.texture-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.texture-btn {
     padding: 10px;
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    background: white;
+    border-radius: var(--radius-md);
+    background: #fff;
+    font-weight: 600;
+    color: #666;
+    transition: all 0.2s;
 }
 
-.result-card {
-    width: 100%;
-    border: 1px solid var(--color-border);
-    background-color: #f0f4c3;
-    /* Light lime background */
+.texture-btn.active {
+    background: var(--color-primary-light);
+    color: white;
+    border-color: var(--color-primary);
 }
 
-.fertilizer-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--spacing-md);
-    margin: var(--spacing-md) 0;
-    text-align: center;
-}
-
-.fert-item {
-    background: white;
-    padding: var(--spacing-sm);
-    border-radius: var(--radius-sm);
+/* Result Card */
+.calc-result-card {
+    padding: var(--spacing-xl);
+    background: linear-gradient(135deg, #fff 0%, #f1f8e9 100%);
     display: flex;
     flex-direction: column;
-    box-shadow: var(--shadow-sm);
+    gap: var(--spacing-lg);
 }
 
-.fert-name {
-    font-size: 0.9rem;
-    color: var(--color-text-secondary);
-}
-
-.fert-qty {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--color-primary-dark);
-}
-
-.cost-estimate {
+.result-header-pro {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: var(--spacing-md);
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    font-size: 1.1rem;
 }
 
-.cost-value {
-    font-weight: 700;
-    color: var(--color-accent-dark);
+.result-header-pro .title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--color-primary-dark);
 }
 
-.note {
+.dosage-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.dose-item {
+    background: white;
+    padding: 15px;
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+.dose-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #888;
+    margin-bottom: 4px;
+}
+
+.dose-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #333;
+}
+
+.dose-value span {
+    font-size: 1rem;
+    color: #999;
+}
+
+.dose-bar {
+    height: 6px;
+    background: #eee;
+    border-radius: 3px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.dose-bar div {
+    height: 100%;
+    border-radius: 3px;
+}
+
+.urea .dose-bar div {
+    background: #4caf50;
+}
+
+.dap .dose-bar div {
+    background: #1976d2;
+}
+
+.mop .dose-bar div {
+    background: #fbc02d;
+}
+
+.economics-box {
+    display: flex;
+    gap: 20px;
+    background: rgba(0, 0, 0, 0.03);
+    padding: 15px;
+    border-radius: var(--radius-md);
+}
+
+.econ-item {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.econ-item .label {
     font-size: 0.8rem;
+    color: #777;
+    font-weight: 600;
+}
+
+.econ-item .value {
+    font-size: 1.25rem;
+    font-weight: 800;
+}
+
+.pro-tips {
+    background: #e3f2fd;
+    padding: 15px;
+    border-radius: var(--radius-md);
+    border-left: 4px solid #2196f3;
+}
+
+.pro-tips h4 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: #0d47a1;
+}
+
+.pro-tips ul {
+    padding-left: 18px;
+    margin: 0;
+}
+
+.pro-tips li {
+    font-size: 0.85rem;
+    color: #444;
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+.calc-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    margin-top: var(--spacing-sm);
-    opacity: 0.7;
+    padding: 40px;
+    color: #888;
+}
+
+.p-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    opacity: 0.3;
+}
+
+@media (max-width: 992px) {
+    .fert-grid {
+        grid-template-columns: 1fr;
+    }
 }

@@ -1,27 +1,29 @@
 :root {
-  /* Agricultural Color Palette */
-  --color-primary: #2E7D32; /* Deep Green - Growth */
-  --color-primary-light: #4CAF50; /* Lighter Green */
-  --color-primary-dark: #1B5E20; /* Darker Green - Stability */
-  --color-accent: #F9A825; /* Golden Yellow - Harvest */
-  --color-accent-light: #FBC02D;
-  --color-accent-dark: #F57F17;
-  
-  /* Earth Tones */
-  --color-earth: #795548; /* Brown - Soil */
-  --color-earth-light: #A1887F;
-  --color-sand: #F5F5DC; /* Beige - Backgrounds */
+  /* Vibrant Agricultural Palette */
+  --color-primary: #1b5e20;
+  /* Deep Forest Green */
+  --color-primary-light: #4caf50;
+  /* Fresh Leaf Green */
+  --color-primary-dark: #003300;
 
-  /* Neutrals */
-  --color-bg-body: #F4F7F4; /* Very light green tinted white */
-  --color-bg-card: #FFFFFF;
-  --color-text-main: #212121;
-  --color-text-secondary: #757575;
-  --color-border: #E0E0E0;
+  --color-accent: #ffb74d;
+  /* Sunlight Gold */
+  --color-accent-hover: #ffa726;
+  --color-danger: #e53935;
+  --color-success: #43a047;
+
+  /* Glassmorphism Variables */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+
+  /* Background gradients */
+  --bg-gradient-main: linear-gradient(135deg, #f1f8e9 0%, #dcedc8 100%);
+  --bg-gradient-card: linear-gradient(145deg, #ffffff, #f0f0f0);
 
   /* Typography */
   --font-family-main: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-family-display: 'Merriweather', serif; /* For headings to give a trusted feel */
+  --font-family-display: 'Merriweather', serif;
 
   /* Spacing */
   --spacing-xs: 4px;
@@ -29,19 +31,16 @@
   --spacing-md: 16px;
   --spacing-lg: 24px;
   --spacing-xl: 32px;
+  --spacing-xxl: 48px;
 
-  /* Shadows - Elevation */
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
-
-  /* Border Radius */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 16px;
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 30px;
   --radius-full: 9999px;
 
   /* Transitions */
-  --transition-fast: 0.2s ease;
-  --transition-normal: 0.3s ease;
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }

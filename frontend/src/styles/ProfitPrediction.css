@@ -1,65 +1,134 @@
-.profit-page {
-    padding-top: var(--spacing-lg);
+.profit-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
 }
 
-.profit-layout {
+.profit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+    min-height: 550px;
+}
+
+.profit-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+/* Profit Results */
+.profit-result-card {
+    padding: var(--spacing-xl);
+    background: linear-gradient(135deg, #fff 0%, #e3f2fd 100%);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.metrics-showcase {
+    display: flex;
+    gap: 20px;
+    background: white;
+    padding: 20px;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.main-metric {
+    flex: 1.5;
+}
+
+.side-metric {
+    flex: 1;
+    border-left: 1px solid #eee;
+    padding-left: 20px;
+}
+
+.metrics-showcase .label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #888;
+    text-transform: uppercase;
+}
+
+.metrics-showcase .value {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-top: 4px;
+}
+
+.financial-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.f-item .f-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.f-progress {
+    height: 8px;
+    background: #eee;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.f-progress div {
+    height: 100%;
+    border-radius: 4px;
+}
+
+.insight-box {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.i-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 15px;
+    border-radius: var(--radius-md);
+}
+
+.i-item svg {
+    font-size: 1.4rem;
+    color: var(--color-primary);
+    margin-top: 2px;
+}
+
+.i-item strong {
+    font-size: 0.95rem;
+    color: #333;
+    display: block;
+}
+
+.i-item p {
+    font-size: 0.8rem;
+    color: #666;
+    margin: 0;
+}
+
+.profit-placeholder {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--spacing-lg);
-    max-width: 500px;
-    margin: 0 auto;
-}
-
-.profit-form,
-.profit-result {
-    width: 100%;
-}
-
-.result-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--spacing-md);
-    font-size: 1.1rem;
-}
-
-.val {
-    font-weight: 700;
-}
-
-.val.income {
-    color: #2E7D32;
-}
-
-.val.expense {
-    color: #d32f2f;
-}
-
-.divider {
-    border-bottom: 2px dashed var(--color-border);
-    margin: var(--spacing-md) 0;
-}
-
-.net-profit {
-    font-size: 1.5rem;
-    font-weight: 800;
-}
-
-.positive {
-    color: #2E7D32;
-}
-
-.negative {
-    color: #d32f2f;
-}
-
-.margin-badge {
+    justify-content: center;
     text-align: center;
-    background: var(--color-primary-light);
-    color: white;
-    padding: 5px;
-    border-radius: var(--radius-full);
-    margin-top: var(--spacing-md);
-    font-weight: 600;
+    padding: 40px;
+    color: #888;
+}
+
+@media (max-width: 992px) {
+    .profit-grid {
+        grid-template-columns: 1fr;
+    }
 }

@@ -1,78 +1,205 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaCloudSun, FaChartLine, FaRobot, FaMicrophone, FaLeaf, FaCoins, FaUniversity, FaCalculator } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import {
+    FaCloudSun, FaChartLine, FaRobot, FaMicrophone, FaLeaf,
+    FaCoins, FaUniversity, FaCalculator, FaBell, FaArrowRight,
+    FaArrowUp, FaArrowDown
+} from 'react-icons/fa';
+import API from '../services/api';
 import '../styles/Dashboard.css';
 
-const QuickAction = ({ icon, label, onClick, color }) => (
-    <button className="quick-action-card" onClick={onClick} style={{ borderTopColor: color }}>
-        <div className="icon-wrapper" style={{ color: color }}>
-            {icon}
+const FeatureCard = ({ icon, title, desc, color, onClick, delay }) => (
+    <motion.button
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay }}
+        className="feature-card-modern glass-card"
+        onClick={onClick}
+    >
+        <div className="card-top" style={{ backgroundColor: `${color}15` }}>
+            <div className="icon-badge" style={{ color: color }}>
+                {icon}
+            </div>
         </div>
-        <span>{label}</span>
-    </button>
+        <div className="card-body">
+            <h3>{title}</h3>
+            <p>{desc}</p>
+            <div className="card-footer">
+                <span style={{ color: color }}>Explore</span>
+                <FaArrowRight className="arrow-icon" style={{ color: color }} />
+            </div>
+        </div>
+    </motion.button>
+);
+
+const MetricWidget = ({ label, value, trend, isUp }) => (
+    <div className="metric-widget glass-card">
+        <span className="metric-label">{label}</span>
+        <div className="metric-main">
+            <span className="metric-value">{value}</span>
+            <span className={`metric-trend ${isUp ? 'up' : 'down'}`}>
+                {isUp ? <FaArrowUp /> : <FaArrowDown />} {trend}
+            </span>
+        </div>
+    </div>
 );
 
 const Dashboard = () => {
     const navigate = useNavigate();
+    const [weather, setWeather] = React.useState(null);
+    const [loading, setLoading] = React.useState(true);
+
+    React.useEffect(() => {
+        // const fetchWeather = async () => {
+        //     try {
+        //         const response = await API.get('/weather?location=Pune');
+        //         setWeather(response.data);
+        //     } catch (error) {
+        //         console.error("Weather error:", error);
+        //     } finally {
+        //         setLoading(false);
+        //     }
+        // };
+        // fetchWeather();
+        setLoading(false); // Just stop loading if we're not fetching
+    }, []);
 
     return (
-        <div className="container dashboard">
-            <header className="dashboard-header">
-                <h1>Dashboard</h1>
-                <p className="date-display">{new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        <div className="dashboard-wrapper">
+            <header className="page-header">
+                <div className="header-text">
+                    <motion.h1
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                    >
+                        Regional Command Center
+                    </motion.h1>
+                    <p className="subtitle">Welcome back, Kisan. Monitoring 12.5 Acres in Pune West.</p>
+                </div>
+                <div className="header-actions">
+                    <div className="notification-bell glass-card">
+                        <FaBell />
+                        <span className="dot"></span>
+                    </div>
+                </div>
             </header>
 
-            {/* Weather & Advisory Section */}
-            <section className="dashboard-grid">
-                <div className="card weather-card">
-                    <div className="card-header">
-                        <h3><FaCloudSun /> Weather Today</h3>
-                    </div>
-                    <div className="weather-content">
-                        <div className="weather-temp">
-                            <span className="temp">28°C</span>
-                            <span className="condition">Sunny</span>
+            {/* Hero Insights Section */}
+            <section className="insight-grid">
+                <div className="weather-featured glass-card">
+                    {loading ? (
+                        <div className="weather-loading">
+                            <span className="loader"></span>
+                            Fetching Live Forecast...
                         </div>
-                        <div className="weather-details">
-                            <p>Humidity: 65%</p>
-                            <p>Wind: 12 km/h</p>
-                        </div>
-                    </div>
+                    ) : (
+                        <>
+                            <div className="weather-header">
+                                <FaCloudSun className="w-icon" />
+                                <div className="w-text">
+                                    <h3>{weather?.weather[0]?.main || "Partly Cloudy"}</h3>
+                                    <span>Temp: {Math.round(weather?.main?.temp)}°C | Humidity: {weather?.main?.humidity}%</span>
+                                </div>
+                            </div>
+                            <div className="weather-details-row">
+                                <div className="w-stat">
+                                    <span className="label">Wind</span>
+                                    <span className="value">{weather?.wind?.speed} km/h</span>
+                                </div>
+                                <div className="w-stat">
+                                    <span className="label">Pressure</span>
+                                    <span className="value">{weather?.main?.pressure} hPa</span>
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
 
-                <div className="card advisory-card">
-                    <div className="card-header">
-                        <h3><FaLeaf /> Daily Advisory</h3>
+                <div className="market-preview glass-card">
+                    <div className="preview-header">
+                        <h3>Live Market Feed</h3>
+                        <button className="btn-text" onClick={() => navigate('/market')}>Analyze</button>
                     </div>
-                    <p className="advisory-text">
-                        "Ideal weather for wheat irrigation today. Check for rust spots on leaves."
-                    </p>
-                    <button className="btn btn-secondary btn-sm" onClick={() => navigate('/voice')}>Read More</button>
-                </div>
-
-                <div className="card market-card">
-                    <div className="card-header">
-                        <h3><FaChartLine /> Market Trends</h3>
+                    <div className="market-list-compact">
+                        <div className="m-item">
+                            <span className="m-name">Wheat (Grade A)</span>
+                            <span className="m-price">₹2,450 <span className="m-diff">+₹45</span></span>
+                        </div>
+                        <div className="m-item">
+                            <span className="m-name">Soybean</span>
+                            <span className="m-price">₹5,120 <span className="m-diff down">-₹12</span></span>
+                        </div>
+                        <div className="m-item">
+                            <span className="m-name">Onion</span>
+                            <span className="m-price">₹1,800 <span className="m-diff">0</span></span>
+                        </div>
                     </div>
-                    <ul className="market-list">
-                        <li className="market-item"><span>Wheat</span> <span className="price-up">₹2,100 (+10)</span></li>
-                        <li className="market-item"><span>Rice</span> <span className="price-down">₹1,950 (-5)</span></li>
-                    </ul>
                 </div>
             </section>
 
-            {/* Quick Actions */}
-            <section className="mt-lg">
-                <h2>Quick Actions</h2>
-                <div className="quick-actions-grid">
-                    <QuickAction icon={<FaRobot />} label="Crop Recommend" color="#2196F3" onClick={() => navigate('/crop-recommend')} />
-                    <QuickAction icon={<FaMicrophone />} label="Voice Assistant" color="#9C27B0" onClick={() => navigate('/voice')} />
-                    <QuickAction icon={<FaLeaf />} label="Disease Detection" color="#F44336" onClick={() => navigate('/disease')} />
-                    <QuickAction icon={<FaCoins />} label="Expenses" color="#FF9800" onClick={() => navigate('/expenses')} />
-                    <QuickAction icon={<FaUniversity />} label="Schemes" color="#795548" onClick={() => navigate('/schemes')} />
-                    <QuickAction icon={<FaCalculator />} label="Fertilizer Calc" color="#4CAF50" onClick={() => navigate('/fertilizer')} />
-                    <QuickAction icon={<FaChartLine />} label="Market Decision" color="#607D8B" onClick={() => navigate('/market')} />
-                    <QuickAction icon={<FaChartLine />} label="Profit Predict" color="#009688" onClick={() => navigate('/profit')} />
+            {/* Metrics Row */}
+            <section className="metrics-row">
+                <MetricWidget label="Total Income" value="₹12.4L" trend="12%" isUp={true} />
+                <MetricWidget label="Current Expenses" value="₹4.2L" trend="3%" isUp={false} />
+                <MetricWidget label="Profit Margin" value="66%" trend="5%" isUp={true} />
+            </section>
+
+            {/* Features Nav */}
+            <section className="feature-navigator">
+                <div className="section-header">
+                    <h2>Agricultural Suite</h2>
+                    <p>AI-driven modules to optimize your farm lifecycle</p>
+                </div>
+                <div className="features-modern-grid">
+                    <FeatureCard
+                        icon={<FaRobot />}
+                        title="Crop Intelligence"
+                        desc="AI soil & climate analysis for optimal crop selection"
+                        color="#2E7D32"
+                        delay={0.1}
+                        onClick={() => navigate('/crop-recommend')}
+                    />
+                    <FeatureCard
+                        icon={<FaMicrophone />}
+                        title="Voice Assistant"
+                        desc="Control your farm via voice commands in local language"
+                        color="#9C27B0"
+                        delay={0.2}
+                        onClick={() => navigate('/voice')}
+                    />
+                    <FeatureCard
+                        icon={<FaLeaf />}
+                        title="Disease Guard"
+                        desc="Real-time scanning for plant diseases & pests"
+                        color="#D32F2F"
+                        delay={0.3}
+                        onClick={() => navigate('/disease')}
+                    />
+                    <FeatureCard
+                        icon={<FaCalculator />}
+                        title="Smart Fertilizer"
+                        desc="Custom NPK dosage based on land fertility tests"
+                        color="#F9A825"
+                        delay={0.4}
+                        onClick={() => navigate('/fertilizer')}
+                    />
+                    <FeatureCard
+                        icon={<FaUniversity />}
+                        title="Policy Tracker"
+                        desc="Latest government schemes & financial support"
+                        color="#1976D2"
+                        delay={0.5}
+                        onClick={() => navigate('/schemes')}
+                    />
+                    <FeatureCard
+                        icon={<FaChartLine />}
+                        title="ROI Predictor"
+                        desc="End-to-end profit forecasting and market timing"
+                        color="#00897B"
+                        delay={0.6}
+                        onClick={() => navigate('/profit')}
+                    />
                 </div>
             </section>
         </div>

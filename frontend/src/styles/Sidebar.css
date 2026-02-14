@@ -1,0 +1,127 @@
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: linear-gradient(180deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing-lg);
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-xl);
+    font-size: 1.5rem;
+    font-weight: 800;
+    font-family: var(--font-family-display);
+    color: var(--color-accent);
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+    transition: all var(--transition-fast);
+    text-decoration: none;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    transform: translateX(5px);
+}
+
+.nav-item.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--color-accent);
+    border-left: 4px solid var(--color-accent);
+    font-weight: 700;
+    /* Glass effect for active item */
+    backdrop-filter: blur(5px);
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding-top: var(--spacing-md);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    background: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+    width: 100%;
+    padding: 10px;
+    transition: color 0.2s;
+}
+
+.logout-btn:hover {
+    color: var(--color-danger);
+}
+
+/* Mobile Responsiveness */
+.mobile-menu-icon {
+    display: none;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1100;
+    background: var(--color-primary);
+    color: white;
+    padding: 10px;
+    border-radius: 50%;
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+}
+
+.overlay {
+    display: none;
+}
+
+@media (max-width: 992px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .mobile-menu-icon {
+        display: flex;
+    }
+
+    .overlay {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 900;
+    }
+}

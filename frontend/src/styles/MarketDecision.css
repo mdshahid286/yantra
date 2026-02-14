@@ -1,61 +1,192 @@
-.market-page {
-    padding-top: var(--spacing-lg);
+.market-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
 }
 
-.market-layout {
+.market-badges {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.market-badges .badge {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.market-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1.5fr 1fr;
+    gap: var(--spacing-xl);
+    min-height: 550px;
+}
+
+.analytics-card {
+    padding: var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+}
+
+.analytics-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-lg);
+}
+
+.asset-info h3 {
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+.asset-info p {
+    color: #888;
+    font-weight: 600;
+}
+
+.price-tag {
+    text-align: right;
+}
+
+.current-price {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-primary-dark);
+    display: block;
+}
+
+.price-change {
+    font-size: 0.95rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.price-change.positive {
+    color: var(--color-success);
+}
+
+.chart-wrapper {
+    flex: 1;
+    width: 100%;
+    min-height: 350px;
+    margin-top: 20px;
+}
+
+.side-panels {
+    display: flex;
+    flex-direction: column;
     gap: var(--spacing-lg);
 }
 
-@media (max-width: 768px) {
-    .market-layout {
+.decision-card {
+    padding: var(--spacing-xl);
+    border-left: 6px solid #fb8c00;
+}
+
+.badge-modern {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.badge-modern.hold {
+    background: #fff3e0;
+    color: #fb8c00;
+}
+
+.rec-box {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #fff8e1;
+    padding: 15px;
+    border-radius: var(--radius-md);
+    margin-top: 15px;
+}
+
+.rec-icon {
+    width: 44px;
+    height: 44px;
+    background: #fb8c00;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.rec-content strong {
+    font-size: 1.1rem;
+    color: #e65100;
+    display: block;
+}
+
+.rec-content p {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.logic-list {
+    margin: 20px 0;
+    padding-left: 18px;
+}
+
+.logic-list li {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 8px;
+    position: relative;
+}
+
+.logic-list li::marker {
+    color: #fb8c00;
+    font-size: 1.2rem;
+}
+
+.news-card {
+    padding: var(--spacing-lg);
+    flex: 1;
+}
+
+.news-item {
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.news-item:last-child {
+    border: none;
+}
+
+.news-date {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #bbb;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.news-item p {
+    font-size: 0.9rem;
+    color: #444;
+    line-height: 1.4;
+}
+
+@media (max-width: 1024px) {
+    .market-grid {
         grid-template-columns: 1fr;
     }
-}
-
-.chart-container {
-    min-height: 300px;
-}
-
-.decision-panel {
-    display: flex;
-    flex-direction: column;
-}
-
-.recommendation {
-    padding: var(--spacing-md);
-    border-radius: var(--radius-md);
-    margin-bottom: var(--spacing-md);
-    border-left: 4px solid #ccc;
-}
-
-.recommendation.sell {
-    background-color: #ffebee;
-    border-color: #f44336;
-}
-
-.recommendation.hold {
-    background-color: #e8f5e9;
-    border-color: #4caf50;
-}
-
-.market-stats {
-    display: flex;
-    justify-content: space-between;
-    margin-top: var(--spacing-sm);
-}
-
-.stat-item {
-    display: flex;
-    flex-direction: column;
-}
-
-.stat-item span {
-    font-size: 0.8rem;
-    color: var(--color-text-secondary);
-}
-
-.stat-item strong {
-    font-size: 1.2rem;
 }

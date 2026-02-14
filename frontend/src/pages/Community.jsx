@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    FaUsers, FaSearch, FaPaperPlane, FaLeaf,
-    FaWheatAwn, FaDroplet, FaFilter, FaAngleRight,
+    FaUsers, FaPaperPlane, FaLeaf,
+    FaWheatAwn, FaDroplet, FaFilter,
     FaRegCommentDots
 } from 'react-icons/fa6';
 import API from '../services/api';

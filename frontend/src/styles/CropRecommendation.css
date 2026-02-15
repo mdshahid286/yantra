@@ -231,3 +231,45 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Sowing Plan Generator */
+.sowing-plan-section {
+    padding: var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    background: white;
+}
+
+.sowing-input-group {
+    display: flex;
+    gap: var(--spacing-md);
+    margin: 20px 0;
+}
+
+.sowing-input-group .input-field {
+    flex: 1;
+}
+
+.sowing-plan-result {
+    background: #f8f9fa;
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    border-left: 5px solid var(--color-primary);
+    margin-top: 20px;
+}
+
+.sowing-plan-result h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--color-primary);
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.plan-content {
+    background: white;
+    padding: 20px;
+    border-radius: var(--radius-md);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}

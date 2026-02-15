@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaPhoneAlt, FaLock, FaSeedling } from 'react-icons/fa';
-import API from '../services/api';
+import axios from 'axios';
 import '../styles/Login.css';
 
 const Login = () => {
@@ -15,16 +15,25 @@ const Login = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            // Skips OTP verification as requested
-            const response = await API.post('/auth/login', { mobile: mobile.trim() });
-            localStorage.setItem('user', JSON.stringify(response.data));
-            navigate('/app');
+            const response = await axios.post('http://localhost:5000/api/auth/login', { mobile: mobile.trim() });
+
+            if (response.data.success) {
+                const userData = {
+                    token: response.data.token,
+                    ...response.data.user,
+                };
+                localStorage.setItem('user', JSON.stringify(userData));
+
+                // Check if profile is completed
+                if (response.data.user.profileCompleted) {
+                    navigate('/app');
+                } else {
+                    navigate('/profile-completion');
+                }
+            }
         } catch (error) {
             console.error('Login failed:', error);
-            // Even if backend fails (e.g. no DB), we might want to bypass for hackathon
-            // but for now let's just navigate to dashboard if we want to "remove verification"
-            localStorage.setItem('user', JSON.stringify({ mobile, name: 'Kisan' }));
-            navigate('/app');
+            alert(error.response?.data?.message || 'Login failed. Please try again.');
         } finally {
             setLoading(false);
         }

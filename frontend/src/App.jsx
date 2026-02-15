@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import Layout from './components/Layout';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
+import ProfileCompletion from './pages/ProfileCompletion';
 import Dashboard from './pages/Dashboard';
 import VoiceAssistant from './pages/VoiceAssistant';
 import DiseaseDetection from './pages/DiseaseDetection';
@@ -23,7 +24,7 @@ const LayoutWrapper = ({ children }) => {
   // Sidebar Layout should only show for authenticated pages (starting with /app or feature pages)
   // Simple check: if path is / or /login, no layout.
   // Also exclude 404 page if it wraps everything, but for now getting layout on 404 inside app is fine.
-  const isPublicPage = location.pathname === '/' || location.pathname === '/login';
+  const isPublicPage = location.pathname === '/' || location.pathname === '/login' || location.pathname === '/profile-completion';
 
   if (isPublicPage) {
     return children;
@@ -38,6 +39,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/profile-completion" element={<ProfileCompletion />} />
 
           {/* Main App Routes */}
           <Route path="/app" element={<Dashboard />} />

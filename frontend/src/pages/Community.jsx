@@ -20,7 +20,9 @@ const Community = () => {
     const [loading, setLoading] = useState(true);
     const [filters, setFilters] = useState({ location: '', crop: '', farmingStyle: '' });
 
-    const user = JSON.parse(localStorage.getItem('user')) || { _id: 'temp', name: 'Farmer' };
+    const user = JSON.parse(localStorage.getItem('user')) || { id: 'temp', name: 'Farmer' };
+    const displayName = user.farmerName || user.name || 'Farmer';
+    const userLocation = user.location ? `${user.location.district}, ${user.location.state}` : '';
     const chatEndRef = useRef(null);
 
     // Initial group fetch
@@ -93,8 +95,8 @@ const Community = () => {
         try {
             const payload = {
                 groupId: selectedGroup._id,
-                senderId: user._id || 'temp',
-                senderName: user.name || 'Anonymous Farmer',
+                senderId: user.id || user._id || 'temp',
+                senderName: displayName + (userLocation ? ` (${userLocation})` : ''),
                 text: newMessage.trim(),
                 type: 'text'
             };
@@ -213,9 +215,9 @@ const Community = () => {
                                         key={msg._id || i}
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        className={`message-bubble ${msg.senderId === user._id ? 'sent' : 'received'}`}
+                                        className={`message-bubble ${(msg.senderId === user.id || msg.senderId === user._id) ? 'sent' : 'received'}`}
                                     >
-                                        {msg.senderId !== user._id && (
+                                        {(msg.senderId !== user.id && msg.senderId !== user._id) && (
                                             <span className="msg-sender">{msg.senderName}</span>
                                         )}
                                         <div className="msg-text">{msg.text}</div>

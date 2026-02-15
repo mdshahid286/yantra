@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaSeedling, FaMapMarkerAlt, FaVial, FaCloudRain, FaCheckCircle, FaArrowRight, FaArrowLeft, FaUndo } from 'react-icons/fa';
+import { FaSeedling, FaMapMarkerAlt, FaVial, FaCloudRain, FaCheckCircle, FaArrowRight, FaArrowLeft, FaUndo, FaDownload } from 'react-icons/fa';
+import html2pdf from 'html2pdf.js';
+import { marked } from 'marked';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import API from '../services/api';
 import '../styles/CropRecommendation.css';
 
@@ -17,6 +21,34 @@ const CropRecommendation = () => {
     });
     const [recommendations, setRecommendations] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    // Sowing Plan State
+    const [sowingCrop, setSowingCrop] = useState('');
+    const [sowingPlan, setSowingPlan] = useState(null);
+    const [sowingLoading, setSowingLoading] = useState(false);
+
+    const fetchSowingPlan = async () => {
+        if (!sowingCrop) return;
+        setSowingLoading(true);
+        setSowingPlan(null);
+        try {
+            const response = await API.post('/crop/sowing-plan', {
+                cropName: sowingCrop,
+                location: formData.city,
+                soilType: `pH ${formData.ph}, NPK ${formData.nitrogen}-${formData.phosphorus}-${formData.potassium}`
+            });
+            if (response.data.success) {
+                setSowingPlan(response.data.plan);
+            } else {
+                alert("Failed to generate plan: " + response.data.message);
+            }
+        } catch (error) {
+            console.error("Sowing Plan Error:", error);
+            alert("Error generating sowing plan. Please try again.");
+        } finally {
+            setSowingLoading(false);
+        }
+    };
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -60,6 +92,69 @@ const CropRecommendation = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const generatePDF = () => {
+        const element = document.createElement('div');
+        element.style.padding = '20px';
+        element.style.fontFamily = 'Arial, sans-serif';
+        element.style.color = '#333';
+
+        const date = new Date().toLocaleDateString();
+
+        let sowingContent = '';
+        if (sowingPlan) {
+            sowingContent = marked.parse(sowingPlan);
+        }
+
+        element.innerHTML = `
+            <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                <h1 style="text-align: center; color: #2E7D32;">Crop Intelligence Report</h1>
+                <p style="text-align: center; font-size: 12px; color: #666;">Generated on: ${date}</p>
+                <hr style="margin: 20px 0; border: 1px solid #eee;" />
+
+                <h2 style="color: #2E7D32;">Farm Profile</h2>
+                <div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <p><strong>Location:</strong> ${formData.city}</p>
+                    <p><strong>Land Size:</strong> ${formData.landSize} Acres</p>
+                    <p><strong>Rainfall:</strong> ${formData.rainfall} mm</p>
+                    <p><strong>Soil:</strong> pH ${formData.ph}, NPK ${formData.nitrogen}-${formData.phosphorus}-${formData.potassium}</p>
+                </div>
+
+                <h2 style="color: #2E7D32; margin-top: 20px;">Recommended Crops</h2>
+                ${recommendations ? recommendations.map(crop => `
+                    <div style="margin-bottom: 15px; padding: 10px; border-left: 4px solid ${crop.color || '#2E7D32'}; background: #fff;">
+                        <h3 style="margin: 0; color: #1a1a1a;">${crop.name} <span style="font-size: 0.8em; color: #666; font-weight: normal;">(${crop.confidence} Match)</span></h3>
+                        <p style="margin: 5px 0;"><strong>Suitability:</strong> ${crop.suitability}</p>
+                        <p style="margin: 5px 0; font-size: 0.9em;"><strong>Key Benefits:</strong> ${crop.pros.join(', ')}</p>
+                    </div>
+                `).join('') : '<p>No recommendations generated yet.</p>'}
+
+                ${sowingPlan ? `
+                    <div style="page-break-before: always;">
+                        <h2 style="color: #2E7D32; margin-top: 20px;">Sowing Plan: ${sowingCrop}</h2>
+                        <div class="sowing-content" style="line-height: 1.6;">
+                            ${sowingContent}
+                        </div>
+                    </div>
+                ` : ''}
+
+                <hr style="margin: 20px 0; border: 1px solid #eee;" />
+                <p style="text-align:center; font-size: 10px; color: #999;">
+                    © ${new Date().getFullYear()} Yantra | AI-Driven Agriculture
+                </p>
+            </div>
+        `;
+
+        const opt = {
+            margin: 10,
+            filename: `${formData.city}_Crop_Report.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save();
     };
 
     return (
@@ -186,7 +281,12 @@ const CropRecommendation = () => {
                             >
                                 <div className="results-header">
                                     <h2>Top Suggestions for {formData.city}</h2>
-                                    <button className="btn btn-secondary" onClick={() => setStep(1)}><FaUndo /> Recalculate</button>
+                                    <div style={{ display: 'flex', gap: '10px' }}>
+                                        <button className="btn btn-secondary" onClick={generatePDF} title="Download Report">
+                                            <FaDownload /> PDF
+                                        </button>
+                                        <button className="btn btn-secondary" onClick={() => setStep(1)}><FaUndo /> Recalculate</button>
+                                    </div>
                                 </div>
 
                                 <div className="rec-grid-modern">
@@ -203,9 +303,56 @@ const CropRecommendation = () => {
                                                     {crop.pros.map(p => <li key={p}><FaCheckCircle /> {p}</li>)}
                                                 </ul>
                                             </div>
-                                            <button className="btn btn-primary btn-block">View Sowing Plan</button>
+                                            <button
+                                                className="btn btn-primary btn-block"
+                                                onClick={() => {
+                                                    setSowingCrop(crop.name);
+                                                    document.querySelector('.sowing-plan-section')?.scrollIntoView({ behavior: 'smooth' });
+                                                }}
+                                            >
+                                                View Sowing Plan
+                                            </button>
                                         </div>
                                     ))}
+                                </div>
+
+                                {/* Sowing Plan Generator Section */}
+                                <div className="sowing-plan-section glass-card mt-8">
+                                    <div className="card-tag"><FaSeedling /> Sowing Guide</div>
+                                    <h2>Generate Custom Sowing Plan</h2>
+                                    <p>Get a detailed step-by-step guide for any crop.</p>
+
+                                    <div className="sowing-input-group">
+                                        <input
+                                            type="text"
+                                            className="input-field"
+                                            placeholder="Enter Crop Name (e.g. Wheat, Tomato)"
+                                            value={sowingCrop}
+                                            onChange={(e) => setSowingCrop(e.target.value)}
+                                        />
+                                        <button
+                                            className="btn btn-primary"
+                                            onClick={fetchSowingPlan}
+                                            disabled={!sowingCrop || sowingLoading}
+                                        >
+                                            {sowingLoading ? "Generating..." : "View Sowing Plan"}
+                                        </button>
+                                    </div>
+
+                                    {sowingPlan && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className="sowing-plan-result"
+                                        >
+                                            <h3>Sowing Plan for {sowingCrop}</h3>
+                                            <div className="plan-content prose prose-sm max-w-none">
+                                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                                    {sowingPlan}
+                                                </ReactMarkdown>
+                                            </div>
+                                        </motion.div>
+                                    )}
                                 </div>
                             </motion.div>
                         )}

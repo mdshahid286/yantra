@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import API from '../services/api';
+import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaCalculator, FaFlask, FaVial, FaChartPie, FaMoneyBillWave, FaInfoCircle, FaUndo, FaFileUpload } from 'react-icons/fa';
+import { FaCalculator, FaFlask, FaVial, FaChartPie, FaMoneyBillWave, FaInfoCircle, FaUndo, FaFileUpload, FaDownload } from 'react-icons/fa';
+import html2pdf from 'html2pdf.js';
 import '../styles/FertilizerCalculator.css';
 
 const FertilizerCalculator = () => {
@@ -30,7 +31,7 @@ const FertilizerCalculator = () => {
         formData.append('report', selectedFile);
 
         try {
-            const response = await API.post('/fertilizers/analyze', formData, {
+            const response = await axios.post('http://localhost:5000/api/fertilizers/analyze', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 
@@ -89,6 +90,81 @@ const FertilizerCalculator = () => {
             });
             setLoading(false);
         }, 1500);
+    };
+
+    const generatePDF = () => {
+        if (!result) return;
+
+        const element = document.createElement('div');
+        element.style.padding = '20px';
+        element.style.fontFamily = 'Arial, sans-serif';
+        element.style.color = '#333';
+        const date = new Date().toLocaleDateString();
+
+        element.innerHTML = `
+            <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                <h1 style="text-align: center; color: #2E7D32;">Nutrient Optimization Report</h1>
+                <p style="text-align: center; font-size: 12px; color: #666;">Generated on: ${date}</p>
+                <hr style="margin: 20px 0; border: 1px solid #eee;" />
+
+                <h2 style="color: #1565C0;">Farm Configuration</h2>
+                <div style="background-color: #f0f4f8; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <p><strong>Crop:</strong> ${inputs.crop}</p>
+                    <p><strong>Land Area:</strong> ${inputs.landSize} ${inputs.unit}</p>
+                    <p><strong>Target Yield:</strong> ${inputs.targetYield} Qntls/Acre</p>
+                </div>
+
+                <h2 style="color: #2E7D32;">Recommended Application</h2>
+                <div style="margin-bottom: 20px;">
+                    <div style="margin-bottom: 10px; padding: 10px; border-left: 4px solid #1B5E20; background: #fff;">
+                        <h3 style="margin: 0; color: #1B5E20;">UREA</h3>
+                        <p style="font-size: 1.2em; font-weight: bold;">${result.urea} kg</p>
+                        <p style="font-size: 0.9em; color: #666;">Basal: ${(result.urea * 0.3).toFixed(0)}kg | Top Dressing: ${(result.urea * 0.7).toFixed(0)}kg</p>
+                    </div>
+                    <div style="margin-bottom: 10px; padding: 10px; border-left: 4px solid #1565C0; background: #fff;">
+                        <h3 style="margin: 0; color: #1565C0;">DAP</h3>
+                        <p style="font-size: 1.2em; font-weight: bold;">${result.dap} kg</p>
+                        <p style="font-size: 0.9em; color: #666;">Apply full dose as basal</p>
+                    </div>
+                    <div style="margin-bottom: 10px; padding: 10px; border-left: 4px solid #F9A825; background: #fff;">
+                        <h3 style="margin: 0; color: #F9A825;">MOP</h3>
+                        <p style="font-size: 1.2em; font-weight: bold;">${result.mop} kg</p>
+                        <p style="font-size: 0.9em; color: #666;">Apply full dose as basal</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; background: #fff3e0; padding: 15px; border-radius: 8px;">
+                    <div>
+                        <strong>Estimated Cost:</strong> ₹${result.totalCost}
+                    </div>
+                    <div>
+                        <strong>Subsidy Benefit:</strong> <span style="color: green;">₹${(result.totalCost * 0.15).toFixed(0)}</span>
+                    </div>
+                </div>
+
+                ${result.isAI ? `
+                    <h3 style="color: #6a1b9a; margin-top: 20px;">AI Insights</h3>
+                    <div style="background-color: #f3e5f5; padding: 15px; border-radius: 8px;">
+                        <p>${result.aiRecommendation}</p>
+                    </div>
+                ` : ''}
+
+                <hr style="margin: 20px 0; border: 1px solid #eee;" />
+                <p style="text-align:center; font-size: 10px; color: #999;">
+                    © ${new Date().getFullYear()} Yantra | AI-Driven Agriculture
+                </p>
+            </div>
+        `;
+
+        const opt = {
+            margin: 10,
+            filename: `Fertilizer_Schedule_${inputs.crop}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save();
     };
 
     return (
@@ -324,7 +400,9 @@ const FertilizerCalculator = () => {
                                 </div>
                             )}
 
-                            <button className="btn btn-secondary btn-block">Download Usage Schedule</button>
+                            <button className="btn btn-secondary btn-block" onClick={generatePDF}>
+                                <FaDownload /> Download Usage Schedule (PDF)
+                            </button>
                         </motion.div>
                     ) : (
                         <div className="calc-placeholder glass-card">

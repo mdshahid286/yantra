@@ -1,58 +1,168 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
-// @desc    Register user
-// @route   POST /api/auth/register
-// @access  Public
-exports.register = async (req, res) => {
-    try {
-        const { name, email, password } = req.body;
-
-        // Check if user exists
-        const userExists = await User.findOne({ email });
-        if (userExists) {
-            return res.status(400).json({ success: false, message: 'User already exists' });
-        }
-
-        // Create user
-        const user = await User.create({
-            name,
-            email,
-            password,
-        });
-
-        sendTokenResponse(user, 201, res);
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
-    }
-};
-
-// @desc    Login user
+// @desc    Login/Register user with mobile number
 // @route   POST /api/auth/login
 // @access  Public
 exports.login = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { mobile } = req.body;
 
-        // Validate email & password
-        if (!email || !password) {
-            return res.status(400).json({ success: false, message: 'Please provide an email and password' });
+        // Validate mobile number
+        if (!mobile) {
+            return res.status(400).json({ success: false, message: 'Please provide a mobile number' });
         }
 
-        // Check for user
-        const user = await User.findOne({ email }).select('+password');
+        // Check if mobile number is valid (10 digits)
+        if (!/^[0-9]{10}$/.test(mobile)) {
+            return res.status(400).json({ success: false, message: 'Please provide a valid 10-digit mobile number' });
+        }
+
+        // Find user by mobile or create new user
+        let user = await User.findOne({ mobile });
+
         if (!user) {
-            return res.status(401).json({ success: false, message: 'Invalid credentials' });
-        }
-
-        // Check if password matches
-        const isMatch = await user.matchPassword(password);
-        if (!isMatch) {
-            return res.status(401).json({ success: false, message: 'Invalid credentials' });
+            // Create new user with mobile number
+            user = await User.create({
+                mobile,
+                name: 'Farmer',
+                profileCompleted: false,
+            });
         }
 
         sendTokenResponse(user, 200, res);
     } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// @desc    Complete user profile
+// @route   POST /api/auth/complete-profile
+// @access  Private
+exports.completeProfile = async (req, res) => {
+    try {
+        const { farmerName, location, farmSize, farmSizeUnit } = req.body;
+
+        // Validate required fields
+        if (!farmerName || !location || !location.state || !location.district || !farmSize || !farmSizeUnit) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please provide all required fields: farmerName, location (state, district), farmSize, farmSizeUnit'
+            });
+        }
+
+        // Update user profile
+        const user = await User.findByIdAndUpdate(
+            req.user.id,
+            {
+                farmerName,
+                name: farmerName, // Also update name field
+                location: {
+                    state: location.state,
+                    district: location.district,
+                    latitude: location.latitude || null,
+                    longitude: location.longitude || null,
+                },
+                farmSize,
+                farmSizeUnit,
+                profileCompleted: true,
+            },
+            { new: true, runValidators: true }
+        );
+
+        res.status(200).json({
+            success: true,
+            message: 'Profile completed successfully',
+            user: {
+                id: user._id,
+                mobile: user.mobile,
+                name: user.name,
+                farmerName: user.farmerName,
+                location: user.location,
+                farmSize: user.farmSize,
+                farmSizeUnit: user.farmSizeUnit,
+                profileCompleted: user.profileCompleted,
+            },
+        });
+    } catch (error) {
+        console.error('Complete profile error:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// @desc    Get user profile
+// @route   GET /api/auth/profile
+// @access  Private
+exports.getProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        res.status(200).json({
+            success: true,
+            user: {
+                id: user._id,
+                mobile: user.mobile,
+                name: user.name,
+                farmerName: user.farmerName,
+                email: user.email,
+                location: user.location,
+                farmSize: user.farmSize,
+                farmSizeUnit: user.farmSizeUnit,
+                profileCompleted: user.profileCompleted,
+                createdAt: user.createdAt,
+            },
+        });
+    } catch (error) {
+        console.error('Get profile error:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// @desc    Update user profile
+// @route   PUT /api/auth/profile
+// @access  Private
+exports.updateProfile = async (req, res) => {
+    try {
+        const { farmerName, location, farmSize, farmSizeUnit, email } = req.body;
+
+        const updateFields = {};
+        if (farmerName) {
+            updateFields.farmerName = farmerName;
+            updateFields.name = farmerName;
+        }
+        if (location) updateFields.location = location;
+        if (farmSize !== undefined) updateFields.farmSize = farmSize;
+        if (farmSizeUnit) updateFields.farmSizeUnit = farmSizeUnit;
+        if (email) updateFields.email = email;
+
+        const user = await User.findByIdAndUpdate(
+            req.user.id,
+            updateFields,
+            { new: true, runValidators: true }
+        );
+
+        res.status(200).json({
+            success: true,
+            message: 'Profile updated successfully',
+            user: {
+                id: user._id,
+                mobile: user.mobile,
+                name: user.name,
+                farmerName: user.farmerName,
+                email: user.email,
+                location: user.location,
+                farmSize: user.farmSize,
+                farmSizeUnit: user.farmSizeUnit,
+                profileCompleted: user.profileCompleted,
+            },
+        });
+    } catch (error) {
+        console.error('Update profile error:', error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
@@ -69,8 +179,14 @@ const sendTokenResponse = (user, statusCode, res) => {
         token,
         user: {
             id: user._id,
+            mobile: user.mobile,
             name: user.name,
+            farmerName: user.farmerName,
             email: user.email,
+            location: user.location,
+            farmSize: user.farmSize,
+            farmSizeUnit: user.farmSizeUnit,
+            profileCompleted: user.profileCompleted,
         },
     });
 };

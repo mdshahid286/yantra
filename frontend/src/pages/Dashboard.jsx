@@ -52,22 +52,91 @@ const Dashboard = () => {
     const [expenses, setExpenses] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
 
+    // Helper: Map WMO weather codes to description
+    const getWeatherDescription = (code) => {
+        const codes = {
+            0: "Clear Sky",
+            1: "Mainly Clear", 2: "Partly Cloudy", 3: "Overcast",
+            45: "Fog", 48: "Depositing Rime Fog",
+            51: "Light Drizzle", 53: "Moderate Drizzle", 55: "Dense Drizzle",
+            61: "Slight Rain", 63: "Moderate Rain", 65: "Heavy Rain",
+            71: "Slight Snow", 73: "Moderate Snow", 75: "Heavy Snow",
+            80: "Slight Showers", 81: "Moderate Showers", 82: "Violent Showers",
+            95: "Thunderstorm", 96: "Thunderstorm + Hail", 99: "Thunderstorm + Heavy Hail"
+        };
+        return codes[code] || "Variable";
+    };
+
     React.useEffect(() => {
         const fetchDashboardData = async () => {
-            console.log("[Dashboard] Fetching Market Trends...");
+            console.log("[Dashboard] Fetching Data...");
             try {
-                // Fetch market trends via API
+                // 1. Fetch User Coordinates & Weather
+                const userStr = localStorage.getItem('user');
+                if (1) {
+                    const user = JSON.parse(userStr);
+                    let latitude = 12.9716;
+                    let longitude = 79.1588;
+                    const district = "Vellore";
+
+                    // Fallback: If no coords but district exists, geocode it
+                    if ((!latitude || !longitude) && district) {
+                        try {
+                            const districtName = district.trim();
+                            console.log(`[Dashboard] Geocoding district: ${districtName}`);
+                            const geoRes = await fetch(
+                                `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(districtName)}&count=1&language=en&format=json`
+                            );
+                            const geoData = await geoRes.json();
+                            if (geoData.results && geoData.results.length > 0) {
+                                latitude = geoData.results[0].latitude;
+                                longitude = geoData.results[0].longitude;
+                                console.log(`[Dashboard] Geocoded to: ${latitude}, ${longitude}`);
+                            } else {
+                                console.warn(`[Dashboard] Geocoding failed for ${districtName}`);
+                            }
+                        } catch (geoErr) {
+                            console.error("Geocoding Error:", geoErr);
+                        }
+                    }
+
+                    if (latitude && longitude) {
+                        try {
+                            const weatherRes = await fetch(
+                                `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`
+                            );
+                            const weatherData = await weatherRes.json();
+
+                            if (weatherData.current_weather) {
+                                setWeather({
+                                    weather: [{ main: getWeatherDescription(weatherData.current_weather.weathercode) }],
+                                    main: {
+                                        temp: weatherData.current_weather.temperature,
+                                        humidity: 60, // Open-Meteo basic free tier doesn't always send humidity in current_weather, distinct endpoint needed or fallback
+                                        pressure: 1012
+                                    },
+                                    wind: { speed: weatherData.current_weather.windspeed }
+                                });
+                            }
+                        } catch (err) {
+                            console.error("Weather API Error:", err);
+                        }
+                    } else {
+                        console.warn("User location (lat/long or district) not found for weather");
+                    }
+                }
+
+                // 2. Fetch market trends via API
                 const response = await API.get('/market/trends');
                 if (response.data.success) {
                     setMarketTrends(response.data.data);
                 }
 
-                // Fetch local expenses
+                // 3. Fetch local expenses
                 const savedExp = localStorage.getItem('yantra_expenses');
                 if (savedExp) {
                     setExpenses(JSON.parse(savedExp));
                 } else {
-                    // Fallback to initial samples if empty
                     const samples = [
                         { amount: 4500, type: 'debit' },
                         { amount: 25000, type: 'credit' },
@@ -84,7 +153,7 @@ const Dashboard = () => {
         };
         fetchDashboardData();
 
-        // Listen for storage changes (if tab is updated)
+        // Listen for storage changes
         const handleStorageChange = () => {
             const savedExp = localStorage.getItem('yantra_expenses');
             if (savedExp) setExpenses(JSON.parse(savedExp));
@@ -109,7 +178,7 @@ const Dashboard = () => {
                     >
                         Regional Command Center
                     </motion.h1>
-                    <p className="subtitle">Welcome back, Kisan. Monitoring 12.5 Acres in Pune West.</p>
+                    <p className="subtitle">Welcome back, Kisan. Monitoring in Katpadi,TN,IN</p>
                 </div>
                 <div className="header-actions">
                     <div className="notification-bell glass-card">
@@ -132,18 +201,18 @@ const Dashboard = () => {
                             <div className="weather-header">
                                 <FaCloudSun className="w-icon" />
                                 <div className="w-text">
-                                    <h3>{weather?.weather[0]?.main || "Partly Cloudy"}</h3>
-                                    <span>Temp: {Math.round(weather?.main?.temp) || "28"}°C | Humidity: {weather?.main?.humidity || "45"}%</span>
+                                    <h3>{weather?.weather?.[0]?.main || "Partly Cloudy"}</h3>
+                                    <span>Temp: {weather?.main?.temp ?? "--"}°C | Humidity: {weather?.main?.humidity ?? "--"}%</span>
                                 </div>
                             </div>
                             <div className="weather-details-row">
                                 <div className="w-stat">
                                     <span className="label">Wind</span>
-                                    <span className="value">{weather?.wind?.speed || "12"} km/h</span>
+                                    <span className="value">{weather?.wind?.speed ?? "--"} km/h</span>
                                 </div>
                                 <div className="w-stat">
                                     <span className="label">Pressure</span>
-                                    <span className="value">{weather?.main?.pressure || "1012"} hPa</span>
+                                    <span className="value">{weather?.main?.pressure ?? "--"} hPa</span>
                                 </div>
                             </div>
                         </>

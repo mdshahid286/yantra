@@ -34,7 +34,7 @@ exports.analyzeSoilReport = async (req, res, next) => {
             return res.status(400).json({ success: false, message: 'Please upload a soil report (PDF or Word).' });
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
         let analysisInput;
         let isMultimodal = false;
 
@@ -107,7 +107,8 @@ exports.analyzeSoilReport = async (req, res, next) => {
         if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
 
     } catch (error) {
-        console.error("Analysis Error:", error);
+        console.error("Analysis Error Details:", JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        console.error("Full Error Stack:", error);
         if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path); // Cleanup on error
         next(error);
     }

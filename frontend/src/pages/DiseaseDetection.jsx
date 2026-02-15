@@ -4,6 +4,7 @@ import { FaCamera, FaUpload, FaLeaf, FaExclamationTriangle, FaCheckCircle, FaUnd
 import API from '../services/api';
 import '../styles/DiseaseDetection.css';
 import axios from "axios";
+import html2pdf from 'html2pdf.js';
 
 const DiseaseDetection = () => {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -135,6 +136,57 @@ const DiseaseDetection = () => {
         }
     };
 
+    const generatePDF = () => {
+        if (!result || !selectedImage) return;
+
+        const element = document.createElement('div');
+        element.style.padding = '20px';
+        element.style.fontFamily = 'Arial, sans-serif';
+        element.style.color = '#333';
+        const date = new Date().toLocaleDateString();
+
+        element.innerHTML = `
+            <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                <h1 style="text-align: center; color: #d9534f;">Disease Detection Report</h1>
+                <p style="text-align: center; font-size: 12px; color: #666;">Generated on: ${date}</p>
+                <hr style="margin: 20px 0; border: 1px solid #eee;" />
+
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img src="${selectedImage}" style="max-width: 300px; max-height: 300px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
+                </div>
+
+                <div style="background-color: ${result.healthy ? '#d4edda' : '#f8d7da'}; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid ${result.healthy ? '#c3e6cb' : '#f5c6cb'};">
+                    <h2 style="color: ${result.healthy ? '#155724' : '#721c24'}; margin-top: 0;">Diagnosis: ${result.diseaseName}</h2>
+                    <p><strong>Confidence:</strong> ${result.confidence}</p>
+                    <p><strong>Severity:</strong> ${result.severity}</p>
+                    <p><strong>Status:</strong> ${result.healthy ? 'Healthy' : 'Infected'}</p>
+                </div>
+
+                ${!result.healthy ? `
+                    <h3 style="color: #2E7D32; margin-top: 20px;">Treatment Plan</h3>
+                    <div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; border-left: 4px solid #2E7D32;">
+                        ${result.treatment.split('\n').map(line => `<p style="margin: 5px 0;">${line}</p>`).join('')}
+                    </div>
+                ` : ''}
+
+                <hr style="margin: 20px 0; border: 1px solid #eee;" />
+                <p style="text-align:center; font-size: 10px; color: #999;">
+                    © ${new Date().getFullYear()} Yantra | AI-Driven Agriculture
+                </p>
+            </div>
+        `;
+
+        const opt = {
+            margin: 10,
+            filename: `Disease_Report_${new Date().getTime()}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save();
+    };
+
     return (
         <div className="disease-container">
             <header className="page-header-modern">
@@ -258,8 +310,8 @@ const DiseaseDetection = () => {
                             </div>
 
                             <div className="action-row">
-                                <button className="btn btn-primary">Generate PDF Report</button>
-                                <button className="btn-icon"><FaUndo /></button>
+                                <button className="btn btn-primary" onClick={generatePDF}>Generate PDF Report</button>
+                                <button className="btn-icon" onClick={() => { setSelectedImage(null); setResult(null); }}><FaUndo /></button>
                             </div>
                         </motion.div>
                     )}

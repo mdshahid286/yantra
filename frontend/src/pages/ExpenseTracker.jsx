@@ -105,15 +105,7 @@ const ExpenseTracker = () => {
                         </div>
                     </div>
 
-                    <div className="voice-log-card glass-card" onClick={() => setIsListening(!isListening)}>
-                        <div className={`v-btn ${isListening ? 'active' : ''}`}>
-                            <FaMicrophone />
-                        </div>
-                        <div className="v-text">
-                            <h4>Voice Entry</h4>
-                            <p>{isListening ? "Listening to amount..." : "Tap to record expense"}</p>
-                        </div>
-                    </div>
+
                 </div>
 
                 {/* Ledger Section */}

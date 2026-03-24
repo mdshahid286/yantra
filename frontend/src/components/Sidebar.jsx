@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
     FaHome, FaLeaf, FaRobot, FaChartLine, FaUniversity,
-    FaCalculator, FaCoins, FaSignOutAlt, FaBars, FaTimes
+    FaCalculator, FaCoins, FaSignOutAlt, FaBars, FaTimes, FaUsers
 } from 'react-icons/fa';
 import '../styles/Sidebar.css';
 
@@ -15,7 +15,8 @@ const Sidebar = () => {
 
     const menuItems = [
         { path: '/app', name: 'Dashboard', icon: <FaHome /> },
-        { path: '/voice', name: 'Voice Assistant', icon: <FaRobot /> },
+        { path: '/community', name: 'Kisan Community', icon: <FaUsers /> },
+        { path: '/voice', name: 'AI Assistant', icon: <FaRobot /> },
         { path: '/disease', name: 'Disease Detect', icon: <FaLeaf /> },
         { path: '/crop-recommend', name: 'Crop Suggestion', icon: <FaLeaf /> },
         { path: '/market', name: 'Market Prices', icon: <FaChartLine /> },

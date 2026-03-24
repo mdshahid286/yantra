@@ -141,9 +141,14 @@ const GovernmentSchemes = () => {
                             </div>
 
                             <div className="s-card-footer">
-                                <button className="btn btn-primary btn-block">
+                                <a
+                                    href={scheme.link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn btn-primary btn-block"
+                                >
                                     View Detailed Policy <FaExternalLinkAlt />
-                                </button>
+                                </a>
                             </div>
                         </motion.div>
                     ))}

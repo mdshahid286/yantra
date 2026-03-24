@@ -24,13 +24,57 @@ const MarketDecision = () => {
         insights: []
     });
 
+    const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes in milliseconds
+
+    const getCachedData = (cropName) => {
+        try {
+            const cacheKey = `market_${cropName}`;
+            const cached = localStorage.getItem(cacheKey);
+            if (cached) {
+                const { data, timestamp } = JSON.parse(cached);
+                const now = Date.now();
+                // Check if cache is still valid (less than 30 minutes old)
+                if (now - timestamp < CACHE_DURATION) {
+                    console.log(`[Frontend] Using cached data for ${cropName}`);
+                    return data;
+                }
+            }
+        } catch (error) {
+            console.error('Cache read error:', error);
+        }
+        return null;
+    };
+
+    const setCachedData = (cropName, data) => {
+        try {
+            const cacheKey = `market_${cropName}`;
+            const cacheData = {
+                data: data,
+                timestamp: Date.now()
+            };
+            localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+        } catch (error) {
+            console.error('Cache write error:', error);
+        }
+    };
+
     const fetchMarket = async (cropName) => {
+        // First, try to get cached data
+        const cachedData = getCachedData(cropName);
+        if (cachedData) {
+            setMarketInfo(cachedData);
+            return;
+        }
+
+        // If no cache or expired, fetch from API
         setLoading(true);
         console.log(`[Frontend] Fetching 1-Month AI Data for: ${cropName}`);
         try {
             const response = await API.post('/market', { crop: cropName });
             console.log("[Frontend] Deep AI Market Response:", response.data);
             setMarketInfo(response.data);
+            // Cache the response
+            setCachedData(cropName, response.data);
         } catch (error) {
             console.error('Market data fetch error:', error);
         } finally {

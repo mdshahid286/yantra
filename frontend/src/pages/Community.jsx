@@ -143,8 +143,11 @@ const Community = () => {
                 {/* Sidebar */}
                 <aside className="community-sidebar">
                     <div className="sidebar-header">
-                        <h2>Community</h2>
-                        <p>Discuss with fellow farmers</p>
+
+                        <div className="header-text">
+                            <h2>Kisan Community</h2>
+                            <p>Connect • Share • Grow Together</p>
+                        </div>
                     </div>
 
                     <div className="filter-section">
@@ -202,7 +205,7 @@ const Community = () => {
                             <header className="chat-header">
                                 <div className="chat-title">
                                     <h3>{selectedGroup.name}</h3>
-                                    <span>{selectedGroup.membersCount} Farmers Online</span>
+
                                 </div>
                                 <div className="chat-actions">
                                     <FaFilter />

@@ -33,8 +33,8 @@ const LandingPage = () => {
                             The Future of <span className="highlight">Indian Farming</span> is Here.
                         </h1>
                         <p className="hero-subtitle">
-                            Empower your fields with Gemini AI. From instant disease detection to real-time market prediction,
-                            Yantra is your digital partner in agricultural success.
+                            Empower your fields with AgriSmart AI. From instant disease detection to real-time market prediction,
+                            AgriSmart AI is your digital partner in agricultural success.
                         </p>
                         <div className="hero-buttons">
                             <button className="btn btn-primary btn-lg" onClick={() => navigate('/login')}>Empower Your Farm</button>

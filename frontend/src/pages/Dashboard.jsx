@@ -7,6 +7,7 @@ import {
     FaArrowUp, FaArrowDown, FaUsers
 } from 'react-icons/fa';
 import API from '../services/api';
+import newsData from '../data/news.json';
 import '../styles/Dashboard.css';
 
 const FeatureCard = ({ icon, title, desc, color, onClick, delay }) => (
@@ -126,10 +127,43 @@ const Dashboard = () => {
                     }
                 }
 
-                // 2. Fetch market trends via API
-                const response = await API.get('/market/trends');
-                if (response.data.success) {
-                    setMarketTrends(response.data.data);
+                // 2. Fetch market trends via API with caching
+                const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
+                const CACHE_KEY = 'dashboard_market_trends';
+
+                try {
+                    // Check cache first
+                    const cached = localStorage.getItem(CACHE_KEY);
+                    if (cached) {
+                        const { data, timestamp } = JSON.parse(cached);
+                        const now = Date.now();
+                        if (now - timestamp < CACHE_DURATION) {
+                            console.log('[Dashboard] Using cached market trends');
+                            setMarketTrends(data);
+                        } else {
+                            // Cache expired, fetch new data
+                            const response = await API.get('/market/trends');
+                            if (response.data.success) {
+                                setMarketTrends(response.data.data);
+                                localStorage.setItem(CACHE_KEY, JSON.stringify({
+                                    data: response.data.data,
+                                    timestamp: Date.now()
+                                }));
+                            }
+                        }
+                    } else {
+                        // No cache, fetch new data
+                        const response = await API.get('/market/trends');
+                        if (response.data.success) {
+                            setMarketTrends(response.data.data);
+                            localStorage.setItem(CACHE_KEY, JSON.stringify({
+                                data: response.data.data,
+                                timestamp: Date.now()
+                            }));
+                        }
+                    }
+                } catch (error) {
+                    console.error('Market trends fetch error:', error);
                 }
 
                 // 3. Fetch local expenses
@@ -178,7 +212,7 @@ const Dashboard = () => {
                     >
                         Regional Command Center
                     </motion.h1>
-                    <p className="subtitle">Welcome back, Kisan. Monitoring in Katpadi,TN,IN</p>
+                    <p className="subtitle">Welcome back, Kisan. Monitoring in Katpadi,TN,I</p>
                 </div>
                 <div className="header-actions">
                     <div className="notification-bell glass-card">
@@ -246,25 +280,58 @@ const Dashboard = () => {
             </section>
 
             {/* Metrics Row */}
-            <section className="metrics-row">
-                <MetricWidget
-                    label="Total Income"
-                    value={`₹${(totalIncome / 1000).toFixed(1)}K`}
-                    trend=""
-                    isUp={true}
-                />
-                <MetricWidget
-                    label="Current Expenses"
-                    value={`₹${(totalExpenses / 1000).toFixed(1)}K`}
-                    trend=""
-                    isUp={false}
-                />
-                <MetricWidget
-                    label="Profit Margin"
-                    value={`${profitMargin}%`}
-                    trend=""
-                    isUp={profitMargin > 50}
-                />
+            {/* Metrics & News Section */}
+            <section className="dashboard-mid-section">
+                <div className="metrics-card glass-card">
+                    <div className="preview-header">
+                        <h3>Financial Overview</h3>
+                    </div>
+                    <div className="metrics-list">
+                        <div className="metric-item">
+                            <span className="metric-label">Total Income</span>
+                            <span className="metric-value">
+                                ₹{(totalIncome / 1000).toFixed(1)}K
+                                <span className="metric-trend up">
+                                    <FaArrowUp />
+                                </span>
+                            </span>
+                        </div>
+                        <div className="metric-item">
+                            <span className="metric-label">Current Expenses</span>
+                            <span className="metric-value">
+                                ₹{(totalExpenses / 1000).toFixed(1)}K
+                                <span className="metric-trend down">
+                                    <FaArrowDown />
+                                </span>
+                            </span>
+                        </div>
+                        <div className="metric-item">
+                            <span className="metric-label">Profit Margin</span>
+                            <span className="metric-value">
+                                {profitMargin}%
+                                <span className={`metric-trend ${profitMargin > 50 ? 'up' : 'down'}`}>
+                                    {profitMargin > 50 ? <FaArrowUp /> : <FaArrowDown />}
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="news-widget glass-card">
+                    <div className="news-header">
+                        <h3><FaLeaf /> AgriNews Flash</h3>
+                        <span className="live-badge">LIVE</span>
+                    </div>
+                    <div className="news-list">
+                        {newsData.map((news) => (
+                            <div key={news.id} className="news-item">
+                                <div className="news-date">{news.date}</div>
+                                <h4>{news.title}</h4>
+                                <p>{news.summary}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </section>
 
             {/* Features Nav */}
